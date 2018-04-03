@@ -4,7 +4,7 @@ class EmptyQueueError(Exception):
         return 'an empty queue'
 
 
-class Queue(list):
+class Queue:
     """FIFO Queue implementation using a Python list as underlying storage."""
 
     def __init__(self):

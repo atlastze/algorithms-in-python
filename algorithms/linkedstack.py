@@ -1,70 +1,50 @@
+from slist import SinglyLinkedList
+
+
 class EmptyStackError(Exception):
     """EmptyStackError is raised while accessing an empty stack."""
     def __str__(self):
         return 'an empty stack'
 
 
-class LinkedStack(list):
+class LinkedStack:
     """LIFO Stack implementation using a singly linked list for storage."""
 
-    #-------------------- nested _Node class ------------------------------
-    class _Node:
-        """Lightweight, nonpublic class for storing a singly linked node."""
-        __slots__ = '_element', '_next'  # streamline memory usage
-
-        def __init__(self, element, next):  # initialize node's fields
-            self._element = element         # reference to user's element
-            self._next = next               # reference to next node
-
-    #--------------------------- Stack methods ----------------------------
     def __init__(self):
         """Create an empty stack."""
-        self._head = None
-        self._size = 0
+        self._stack = SinglyLinkedList()
 
     def __len__(self):
         """Return the size of the stack."""
-        return self._size
+        return len(self._stack)
 
     def __str__(self):
         """Return information for users."""
-        s = '['
-        p = self._head
-        while p:
-            s += str(p._element)
-            p = p._next
-            if p:
-                s += ', '
-        s += ']'
-        return s
+        return str(self._stack)
 
     def __repr__(self):
         """Return information for developers."""
-        return '%s (%r)' % (self.__class__, self._head)
+        return '%s (%r)' % (self.__class__, self._stack)
 
     def is_empty(self):
         """Return True is the stack is empty."""
-        return self._size == 0
+        return self._stack.is_empty()
 
     def push(self, e):
         """Push element e to the top of the stack."""
-        self._head = self._Node(e, self._head)
-        self._size += 1
+        return self._stack.insert_back(e)
 
     def pop(self):
         """Return and remove the element at the top of the stack."""
         if self.is_empty():
             raise EmptyStackError
-        answer = self._head._element
-        self._head = self._head._next       # bypass the former top node
-        self._size -= 1
-        return answer
+        return self._stack.remove_first()
 
     def top(self):
         """Return (do not remove) the element at the top of the stack."""
         if self.is_empty():
             raise EmptyStackError
-        return self._head._element
+        return self._stack.first_element()
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from ..stack import Stack
+from algorithms.stack import * 
 
 
 def reverse(src, dest):
@@ -13,4 +13,4 @@ def reverse(src, dest):
 
 
 if __name__ == '__main__':
-    reverse('stack.py', 'temp.txt')
+    reverse('reverse.py', 'temp.txt')

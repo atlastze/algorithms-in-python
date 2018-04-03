@@ -4,7 +4,7 @@ class EmptyStackError(Exception):
         return 'an empty stack'
 
 
-class Stack(list):
+class Stack:
     """LIFO Stack implementation using a Python list as underlying storage."""
 
     def __init__(self):
