@@ -63,14 +63,12 @@ class DoublyLinkedList:
         return self._size == 0
 
 
-    def insert_back(self, e, position = None):
+    def insert_back(self, e, position):
         """Add element e at the back of position.
         NOTE: the default position is the last position.
 
         """
-        if position is None:
-            position = self._sentinel._prev
-        elif not isinstance(position, self._Node):
+        if not isinstance(position, self._Node):
             raise TypeError('requires a position type')
         node = self._Node(e, position, position._next)  # linked to neighbors
         position._next = node
@@ -88,21 +86,48 @@ class DoublyLinkedList:
         self._size -= 1
         return answer  # return deleted element
 
-    def first_element(self):
-        """Return the first element."""
+    def first_position(self):
+        """Return the position of the first element."""
         if self.is_empty():
             raise EmptyListError
-        return self._sentinel._next._element
+        return self._sentinel
 
-    def remove_first(self):
+    def first_element(self):
+        """Return the first element."""
+        return self.first_position()._next._element
+
+    def last_position(self):
+        """Return the position of the last element."""
+        if self.is_empty():
+            raise EmptyListError
+        return self._sentinel._prev._prev
+
+    def last_element(self):
+        """Return the last element."""
+        return self.last_position()._next._element
+
+    def push_front(self, e):
+        """Prepend element e to the list."""
+        return self.insert_back(e, self._sentinel)
+
+    def push_back(self, e):
+        """Append element e to the list."""
+        return self.insert_back(e, self._sentinel._prev)
+
+    def pop_front(self):
         """Delete the first node."""
         return self.remove_back(self._sentinel)
+
+    def pop_back(self):
+        """Delete the last node."""
+        return self.remove_back(self._sentinel._prev)
 
 
 if __name__ == '__main__':
     dl = DoublyLinkedList()
-    first = dl.insert_back(1)
-    second = dl.insert_back(2)
+    first = dl.push_back(1)
+    second = dl.push_back(2)
     third = dl.insert_back(3, first)
     forth = dl.insert_back(4, third)
+    dl.pop_front()
     print(dl)

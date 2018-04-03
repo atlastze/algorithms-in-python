@@ -32,13 +32,13 @@ class LinkedStack:
 
     def push(self, e):
         """Push element e to the top of the stack."""
-        return self._stack.insert_back(e)
+        return self._stack.push_front(e)
 
     def pop(self):
         """Return and remove the element at the top of the stack."""
         if self.is_empty():
             raise EmptyStackError
-        return self._stack.remove_first()
+        return self._stack.pop_front()
 
     def top(self):
         """Return (do not remove) the element at the top of the stack."""

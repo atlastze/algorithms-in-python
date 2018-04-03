@@ -32,13 +32,13 @@ class LinkedQueue:
 
     def enqueue(self, e):
         """Add element e to the back of the queue."""
-        return self._queue.insert_back(e)
+        return self._queue.push_back(e)
 
     def dequeue(self):
         """Return and remove the element at the front of the queue."""
         if self.is_empty():
             raise EmptyQueueError
-        return self._queue.remove_first()
+        return self._queue.pop_front()
 
     def first(self):
         """Return (do not remove) the element at the top of the queue."""
