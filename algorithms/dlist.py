@@ -45,7 +45,7 @@ class DoublyLinkedList:
     def _positions(self):
         """Generate the positions of the list."""
         p = self._sentinel
-        while True: 
+        while True:
             yield p
             p = p._next
             if p is self._sentinel:  # not the last node
@@ -64,8 +64,7 @@ class DoublyLinkedList:
 
     def __repr__(self):
         """Return information for developers."""
-        return '< %s.%s at %s>' % (self.__module__,
-                                   self.__class__,
+        return '< %s object at %s >' % (self.__class__,
                                    hex(id(self)))
 
     def is_empty(self):

@@ -24,8 +24,7 @@ class LinkedQueue:
 
     def __repr__(self):
         """Return information for developers."""
-        return '< %s.%s at %s>' % (self.__module__,
-                                   self.__class__,
+        return '< %s object at %s >' % (self.__class__,
                                    hex(id(self)))
 
     def is_empty(self):
