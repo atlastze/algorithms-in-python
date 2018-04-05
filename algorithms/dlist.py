@@ -42,41 +42,47 @@ class DoublyLinkedList:
         """Return the number of elements in the list."""
         return self._size
 
+    def _positions(self):
+        """Generate the positions of the list."""
+        p = self._sentinel
+        while p is not self._sentinel._prev:
+            yield p
+            p = p._next
+
     def __str__(self):
         """Return information for users."""
         s = '['
-        p = self._sentinel._next
-        while p is not self._sentinel:
-            s += str(p._element)
-            p = p._next
-            if p is not self._sentinel:
-                s += ', '
+        for p in self._positions():
+            if p._next:
+                s += str(p._next._element)
+                if p._next is not self._sentinel._prev:
+                    s += ', '
         s += ']'
         return s
 
     def __repr__(self):
         """Return information for developers."""
-        return '%s (%r)' % (self.__class__, self._sentinel)
+        return '< %s.%s at %s>' % (self.__module__,
+                                   self.__class__,
+                                   hex(id(self)))
 
     def is_empty(self):
         """Return True if list is empty."""
         return self._size == 0
 
 
-    def insert_back(self, e, position):
+    def insert(self, position, e):
         """Add element e at the back of position.
         NOTE: the default position is the last position.
 
         """
-        if not isinstance(position, self._Node):
-            raise TypeError('requires a position type')
         node = self._Node(e, position, position._next)  # linked to neighbors
         position._next = node
         node._next._prev = node
         self._size += 1
         return node
 
-    def remove_back(self, position):
+    def remove(self, position):
         """Delete node at the position from the list and return its element."""
         if self.is_empty():
             raise EmptyListError
@@ -86,48 +92,40 @@ class DoublyLinkedList:
         self._size -= 1
         return answer  # return deleted element
 
-    def first_position(self):
-        """Return the position of the first element."""
-        if self.is_empty():
-            raise EmptyListError
-        return self._sentinel
-
-    def first_element(self):
+    def first(self):
         """Return the first element."""
-        return self.first_position()._next._element
+        return self._sentinel._next._element
 
-    def last_position(self):
-        """Return the position of the last element."""
-        if self.is_empty():
-            raise EmptyListError
-        return self._sentinel._prev._prev
-
-    def last_element(self):
+    def last(self):
         """Return the last element."""
-        return self.last_position()._next._element
+        return self._sentinel._prev._element
 
     def push_front(self, e):
         """Prepend element e to the list."""
-        return self.insert_back(e, self._sentinel)
+        return self.insert(self._sentinel, e)
 
     def push_back(self, e):
         """Append element e to the list."""
-        return self.insert_back(e, self._sentinel._prev)
+        return self.insert(self._sentinel._prev, e)
 
     def pop_front(self):
         """Delete the first node."""
-        return self.remove_back(self._sentinel)
+        if self.is_empty():
+            raise EmptyListError
+        return self.remove(self._sentinel)
 
     def pop_back(self):
         """Delete the last node."""
-        return self.remove_back(self._sentinel._prev)
+        if self.is_empty():
+            raise EmptyListError
+        return self.remove(self._sentinel._prev._prev)
 
 
 if __name__ == '__main__':
     dl = DoublyLinkedList()
     first = dl.push_back(1)
     second = dl.push_back(2)
-    third = dl.insert_back(3, first)
-    forth = dl.insert_back(4, third)
-    dl.pop_front()
+    third = dl.insert(first, 3)
+    forth = dl.insert(third, 4)
+    #dl.pop_front()
     print(dl)

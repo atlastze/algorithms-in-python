@@ -21,7 +21,9 @@ class Stack:
 
     def __repr__(self):
         """Return information for developers."""
-        return '%s (%r)' % (self.__class__, self._data)
+        return '< %s.%s at %s>' % (self.__module__,
+                                   self.__class__,
+                                   hex(id(self)))
 
     def is_empty(self):
         """Return True is the stack is empty."""

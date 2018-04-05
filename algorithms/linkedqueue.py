@@ -24,7 +24,9 @@ class LinkedQueue:
 
     def __repr__(self):
         """Return information for developers."""
-        return '%s (%r)' % (self.__class__, self._queue)
+        return '< %s.%s at %s>' % (self.__module__,
+                                   self.__class__,
+                                   hex(id(self)))
 
     def is_empty(self):
         """Return True is the queue is empty."""
@@ -44,7 +46,7 @@ class LinkedQueue:
         """Return (do not remove) the element at the top of the queue."""
         if self.is_empty():
             raise EmptyQueueError
-        return self._queue.first_element()
+        return self._queue.first()
 
 
 if __name__ == '__main__':

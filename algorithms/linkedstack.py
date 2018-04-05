@@ -24,7 +24,9 @@ class LinkedStack:
 
     def __repr__(self):
         """Return information for developers."""
-        return '%s (%r)' % (self.__class__, self._stack)
+        return '< %s.%s at %s>' % (self.__module__,
+                                   self.__class__,
+                                   hex(id(self)))
 
     def is_empty(self):
         """Return True is the stack is empty."""
@@ -44,11 +46,11 @@ class LinkedStack:
         """Return (do not remove) the element at the top of the stack."""
         if self.is_empty():
             raise EmptyStackError
-        return self._stack.first_element()
+        return self._stack.first()
 
 
 if __name__ == '__main__':
-    s = LinkedStack()                      # contents: [ ]
+    s = LinkedStack()                # contents: [ ]
     s.push(5)                        # contents: [5]
     s.push(3)                        # contents: [5, 3]
     print(len(s))                    # contents: [5, 3];    outputs 2

@@ -38,41 +38,44 @@ class SinglyLinkedList:
         """Return the number of elements in the list."""
         return self._size
 
+    def _positions(self):
+        """Generate the positions of the list."""
+        p = self._sentinel
+        while p:
+            yield p
+            p = p._next
+
     def __str__(self):
         """Return information for users."""
         s = '['
-        p = self._sentinel._next
-        while p:
-            s += str(p._element)
-            p = p._next
-            if p:
-                s += ', '
+        for p in self._positions():
+            if p._next:
+                s += str(p._next._element)
+                if p._next._next:
+                    s += ', '
         s += ']'
         return s
 
     def __repr__(self):
         """Return information for developers."""
-        return '%s (%r)' % (self.__class__, self._sentinel)
+        return '< %s.%s at %s>' % (self.__module__, 
+                                   self.__class__, 
+                                   hex(id(self)))
 
     def is_empty(self):
         """Return True if list is empty."""
         return self._size == 0
 
 
-    def insert_back(self, e, position):
-        """Add element e at the back of position.
-        NOTE: the default position is the first position.
-
-        """
-        if not isinstance(position, self._Node):
-            raise TypeError('requires a position type')
+    def insert(self, position, e):
+        """Add an element at the specific position (after that node)."""
         node = self._Node(e, position._next)  # linked to neighbors
         position._next = node
         self._size += 1
         return node
 
-    def remove_back(self, position):
-        """Delete node at the position from the list and return its element."""
+    def remove(self, position):
+        """Delete node at the specific position and return its element."""
         if self.is_empty():
             raise EmptyListError
         answer = position._next._element
@@ -80,58 +83,47 @@ class SinglyLinkedList:
         self._size -= 1
         return answer  # return deleted element
 
-    def first_position(self):
-        """Return the position of the first element."""
-        if self.is_empty():
-            raise EmptyListError
-        return self._sentinel
-
-    def first_element(self):
+    def first(self):
         """Return the first element."""
-        return self.first_position()._next._element
-
-    def last_position(self):
-        """Return the position of the last element."""
         if self.is_empty():
             raise EmptyListError
-        p = self._sentinel
-        while p._next._next:
-            p = p._next
-        return p
+        return self._sentinel._next._element
 
-    def last_element(self):
+    def last(self):
         """Return the last element."""
-        return self.last_position()._next._element
+        if self.is_empty():
+            raise EmptyListError
+        positions = list(self._positions())
+        return self.positions[-2]._next._element
 
     def push_front(self, e):
         """Prepend element e to the list."""
-        return self.insert_back(e, self._sentinel)
+        return self.insert(self._sentinel, e)
 
     def push_back(self, e):
         """Append element e to the list."""
-        p = None
-        try:
-            p = self.last_position()._next
-        except EmptyListError:
-            p = self._sentinel
-
-        return self.insert_back(e, p)
+        positions = list(self._positions())
+        return self.insert(positions[-1], e)
 
     def pop_front(self):
         """Delete the first node."""
-        return self.remove_back(self._sentinel)
+        if self.is_empty():
+            raise EmptyListError
+        return self.remove(self._sentinel)
 
     def pop_back(self):
         """Delete the last node."""
-        p = self.last_position()._next
-        return self.remove_back(p)
+        if self.is_empty():
+            raise EmptyListError
+        positions = list(self._positions())
+        return self.remove(positions[-2])
 
 
 if __name__ == '__main__':
     sl = SinglyLinkedList()
     first = sl.push_back(1)
     second = sl.push_back(2)
-    third = sl.insert_back(3, first)
-    forth = sl.insert_back(4, third)
-    sl.pop_front()
+    third = sl.insert(first, 3)
+    forth = sl.insert(third, 4)
+    #sl.pop_front()
     print(sl)
