@@ -27,6 +27,10 @@ class LinkedStack:
         return '< %s object at %s >' % (self.__class__,
                                    hex(id(self)))
 
+    def __iter__(self):
+        """Return iterator."""
+        return iter(self._stack)
+
     def is_empty(self):
         """Return True is the stack is empty."""
         return self._stack.is_empty()

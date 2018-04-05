@@ -51,21 +51,20 @@ class DoublyLinkedList:
             if p is self._sentinel:  # not the last node
                 break
 
-    def __str__(self):
-        """Return information for users."""
-        s = '['
-        for p in self._positions():
-            if p._next is not self._sentinel:  # p is a valid position
-                s += str(p._next._element)
-                if p._next._next is not self._sentinel: # not the last position
-                    s += ', '
-        s += ']'
-        return s
-
     def __repr__(self):
         """Return information for developers."""
         return '< %s object at %s >' % (self.__class__,
                                    hex(id(self)))
+
+    def __iter__(self):
+        """Return iterator."""
+        for p in self._positions():
+            if p._next is not self._sentinel:  # p is a valid position
+                yield p._next._element
+
+    def __str__(self):
+        """Return information for users."""
+        return str(list(iter(self)))
 
     def is_empty(self):
         """Return True if list is empty."""

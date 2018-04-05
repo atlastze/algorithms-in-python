@@ -45,21 +45,20 @@ class SinglyLinkedList:
             yield p
             p = p._next
 
-    def __str__(self):
-        """Return information for users."""
-        s = '['
-        for p in self._positions():
-            if p._next:
-                s += str(p._next._element)
-                if p._next._next:
-                    s += ', '
-        s += ']'
-        return s
-
     def __repr__(self):
         """Return information for developers."""
         return '< %s object at %s >' % (self.__class__,
                                    hex(id(self)))
+
+    def __iter__(self):
+        """Return iterator."""
+        for p in self._positions():
+            if p._next:
+                yield p._next._element
+
+    def __str__(self):
+        """Return information for users."""
+        return str(list(iter(self)))
 
     def is_empty(self):
         """Return True if list is empty."""

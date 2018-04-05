@@ -24,6 +24,10 @@ class Queue:
         return '< %s object at %s >' % (self.__class__,
                                    hex(id(self)))
 
+    def __iter__(self):
+        """Return iterator."""
+        return iter(self._data)
+
     def is_empty(self):
         """Return True is the queue is empty."""
         return len(self._data) == 0

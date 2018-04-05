@@ -26,6 +26,9 @@ class LinkedQueue:
         """Return information for developers."""
         return '< %s object at %s >' % (self.__class__,
                                    hex(id(self)))
+    def __iter__(self):
+        """Return iterator."""
+        return iter(self._queue)
 
     def is_empty(self):
         """Return True is the queue is empty."""
