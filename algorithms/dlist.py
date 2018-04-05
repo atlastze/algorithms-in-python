@@ -45,17 +45,19 @@ class DoublyLinkedList:
     def _positions(self):
         """Generate the positions of the list."""
         p = self._sentinel
-        while p is not self._sentinel._prev:
+        while True: 
             yield p
             p = p._next
+            if p is self._sentinel:  # not the last node
+                break
 
     def __str__(self):
         """Return information for users."""
         s = '['
         for p in self._positions():
-            if p._next:
+            if p._next is not self._sentinel:  # p is a valid position
                 s += str(p._next._element)
-                if p._next is not self._sentinel._prev:
+                if p._next._next is not self._sentinel: # not the last position
                     s += ', '
         s += ']'
         return s
@@ -77,8 +79,8 @@ class DoublyLinkedList:
 
         """
         node = self._Node(e, position, position._next)  # linked to neighbors
+        position._next._prev = node
         position._next = node
-        node._next._prev = node
         self._size += 1
         return node
 
