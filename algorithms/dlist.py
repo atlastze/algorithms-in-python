@@ -22,14 +22,6 @@ class DoublyLinkedList:
             self._prev = prev  # previous node reference
             self._next = next  # next node reference
 
-    # -------------------------- nested Position class ------------------------
-    class Position(_Node):
-        """An abstraction representing the location of a single element.
-        The position of an element is defined as the previous node's reference.
-
-        """
-        pass
-
     # -------------------------- DoublyLinkedList methods ---------------------
     def __init__(self):
         """Create an empty list."""
@@ -69,7 +61,6 @@ class DoublyLinkedList:
     def is_empty(self):
         """Return True if list is empty."""
         return self._size == 0
-
 
     def insert(self, position, e):
         """Add element e at the back of position.
@@ -120,6 +111,24 @@ class DoublyLinkedList:
             raise EmptyListError
         return self.remove(self._sentinel._prev._prev)
 
+    def search(self, e):
+        """Return the position of the element in the list.
+        Return None if not exsists."""
+        for p in self._positions():
+            if (p._next is not self._sentinel and
+                p._next._element == e): # not the back
+                return p
+        return None
+
+    def indexof(self, e):
+        """Return the index of the element in the list.
+        Return -1 if not exsists."""
+        for i, p in enumerate(self._positions()):
+            if (p._next is not self._sentinel and
+                p._next._element == e): # not the back
+                return i
+        return -1
+
 
 if __name__ == '__main__':
     dl = DoublyLinkedList()
@@ -128,4 +137,7 @@ if __name__ == '__main__':
     third = dl.insert(first, 3)
     forth = dl.insert(third, 4)
     #dl.pop_front()
+    dl.remove(dl.search(3))
     print(dl)
+    print(dl.indexof(3))
+    print(dl.indexof(4))

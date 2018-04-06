@@ -20,14 +20,6 @@ class SinglyLinkedList:
             self._element = element  # user's element
             self._next = next  # next node reference
 
-    # -------------------------- nested Position class ------------------------
-    class Position(_Node):
-        """An abstraction representing the location of a single element.
-        The position of an element is defined as the previous node's reference.
-
-        """
-        pass
-
     # -------------------------- SinglyLinkedList methods ---------------------
     def __init__(self):
         """Create an empty list."""
@@ -63,7 +55,6 @@ class SinglyLinkedList:
     def is_empty(self):
         """Return True if list is empty."""
         return self._size == 0
-
 
     def insert(self, position, e):
         """Add an element at the specific position (after that node)."""
@@ -116,6 +107,22 @@ class SinglyLinkedList:
         positions = list(self._positions())
         return self.remove(positions[-2])
 
+    def search(self, e):
+        """Return the position of the element in the list.
+        Return None if not exsists."""
+        for p in self._positions():
+            if p._next and p._next._element == e: # not the back 
+                return p
+        return None
+
+    def indexof(self, e):
+        """Return the index of the element in the list.
+        Return -1 if not exsists."""
+        for i, p in enumerate(self._positions()):
+            if p._next and p._next._element == e: # not the back 
+                return i 
+        return -1 
+
 
 if __name__ == '__main__':
     sl = SinglyLinkedList()
@@ -124,4 +131,7 @@ if __name__ == '__main__':
     third = sl.insert(first, 3)
     forth = sl.insert(third, 4)
     #sl.pop_front()
+    sl.remove(sl.search(3))
     print(sl)
+    print(sl.indexof(3))
+    print(sl.indexof(4))
