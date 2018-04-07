@@ -30,12 +30,19 @@ class SinglyLinkedList:
         """Return the number of elements in the list."""
         return self._size
 
-    def _positions(self):
+    def __isend(self, node):
+        """Return True if the node is the last node."""
+        return node._next is None
+
+    def __positions(self):
         """Generate the positions of the list."""
         p = self._sentinel
-        while p:
+        while True:
             yield p
-            p = p._next
+            if self.__isend(p):
+                break
+            else:
+                p = p._next
 
     def __repr__(self):
         """Return information for developers."""
@@ -44,8 +51,8 @@ class SinglyLinkedList:
 
     def __iter__(self):
         """Return iterator."""
-        for p in self._positions():
-            if p._next:
+        for p in self.__positions():
+            if not self.__isend(p):
                 yield p._next._element
 
     def __str__(self):
@@ -82,7 +89,7 @@ class SinglyLinkedList:
         """Return the last element."""
         if self.is_empty():
             raise EmptyListError
-        positions = list(self._positions())
+        positions = list(self.__positions())
         return self.positions[-2]._next._element
 
     def push_front(self, e):
@@ -91,7 +98,7 @@ class SinglyLinkedList:
 
     def push_back(self, e):
         """Append element e to the list."""
-        positions = list(self._positions())
+        positions = list(self.__positions())
         return self.insert(positions[-1], e)
 
     def pop_front(self):
@@ -104,22 +111,22 @@ class SinglyLinkedList:
         """Delete the last node."""
         if self.is_empty():
             raise EmptyListError
-        positions = list(self._positions())
+        positions = list(self.__positions())
         return self.remove(positions[-2])
 
     def search(self, e):
         """Return the position of the element in the list.
         Return None if not exsists."""
-        for p in self._positions():
-            if p._next and p._next._element == e: # not the back 
+        for p in self.__positions():
+            if not self.__isend(p) and p._next._element == e: # not the back 
                 return p
         return None
 
     def indexof(self, e):
         """Return the index of the element in the list.
         Return -1 if not exsists."""
-        for i, p in enumerate(self._positions()):
-            if p._next and p._next._element == e: # not the back 
+        for i, p in enumerate(self.__positions()):
+            if not self.__isend(p) and p._next._element == e: # not the back 
                 return i 
         return -1 
 

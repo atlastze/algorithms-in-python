@@ -34,14 +34,19 @@ class DoublyLinkedList:
         """Return the number of elements in the list."""
         return self._size
 
-    def _positions(self):
+    def __isend(self, node):
+        """Return True if the node is the last node."""
+        return node._next is self._sentinel
+
+    def __positions(self):
         """Generate the positions of the list."""
         p = self._sentinel
         while True:
             yield p
-            p = p._next
-            if p is self._sentinel:  # not the last node
+            if self.__isend(p):  # not the last node
                 break
+            else:
+                p = p._next
 
     def __repr__(self):
         """Return information for developers."""
@@ -50,7 +55,7 @@ class DoublyLinkedList:
 
     def __iter__(self):
         """Return iterator."""
-        for p in self._positions():
+        for p in self.__positions():
             if p._next is not self._sentinel:  # p is a valid position
                 yield p._next._element
 
@@ -114,18 +119,16 @@ class DoublyLinkedList:
     def search(self, e):
         """Return the position of the element in the list.
         Return None if not exsists."""
-        for p in self._positions():
-            if (p._next is not self._sentinel and
-                p._next._element == e): # not the back
+        for p in self.__positions():
+            if not self.__isend(p) and p._next._element == e: # not the back
                 return p
         return None
 
     def indexof(self, e):
         """Return the index of the element in the list.
         Return -1 if not exsists."""
-        for i, p in enumerate(self._positions()):
-            if (p._next is not self._sentinel and
-                p._next._element == e): # not the back
+        for i, p in enumerate(self.__positions()):
+            if not self.__isend(p) and p._next._element == e: # not the back
                 return i
         return -1
 
@@ -137,7 +140,7 @@ if __name__ == '__main__':
     third = dl.insert(first, 3)
     forth = dl.insert(third, 4)
     #dl.pop_front()
-    dl.remove(dl.search(3))
+    #dl.remove(dl.search(3))
     print(dl)
     print(dl.indexof(3))
     print(dl.indexof(4))
