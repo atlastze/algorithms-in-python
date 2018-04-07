@@ -52,7 +52,7 @@ class SinglyLinkedList:
     def __iter__(self):
         """Return iterator."""
         for p in self.__positions():
-            if not self.__isend(p):
+            if not self.__isend(p):  # not the last node
                 yield p._next._element
 
     def __str__(self):

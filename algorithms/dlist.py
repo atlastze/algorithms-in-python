@@ -43,7 +43,7 @@ class DoublyLinkedList:
         p = self._sentinel
         while True:
             yield p
-            if self.__isend(p):  # not the last node
+            if self.__isend(p): 
                 break
             else:
                 p = p._next
@@ -56,7 +56,7 @@ class DoublyLinkedList:
     def __iter__(self):
         """Return iterator."""
         for p in self.__positions():
-            if p._next is not self._sentinel:  # p is a valid position
+            if not self.__isend(p):  # not the last node 
                 yield p._next._element
 
     def __str__(self):
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     third = dl.insert(first, 3)
     forth = dl.insert(third, 4)
     #dl.pop_front()
-    #dl.remove(dl.search(3))
+    dl.remove(dl.search(3))
     print(dl)
     print(dl.indexof(3))
     print(dl.indexof(4))
