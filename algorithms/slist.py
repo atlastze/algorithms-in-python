@@ -1,3 +1,27 @@
+# Copyright (C) 2018, bruinspaw <bruinspaw@gmail.com>
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this
+#    list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class EmptyListError(Exception):
     """EmptyListError is raised while accessing an empty list."""
     def __str__(self):
@@ -5,7 +29,7 @@ class EmptyListError(Exception):
 
 class SinglyLinkedList:
     """A base class providing a singly linked list representation.
-    self._sentinel._next reference to the head of the list;
+        self._sentinel._next reference to the head of the list;
     The position of an element is defined as the previous node's reference,
     that is self._sentinel is position of the first element.
 
@@ -35,7 +59,10 @@ class SinglyLinkedList:
         return node._next is None
 
     def __positions(self):
-        """Generate the positions of the list."""
+        """Generate the positions of the list
+        (including the sentinel and last node).
+
+        """
         p = self._sentinel
         while True:
             yield p
@@ -64,14 +91,14 @@ class SinglyLinkedList:
         return self._size == 0
 
     def insert(self, position, e):
-        """Add an element at the specific position (after that node)."""
+        """Insert an element at the position and return the node."""
         node = self._Node(e, position._next)  # linked to neighbors
         position._next = node
         self._size += 1
         return node
 
     def remove(self, position):
-        """Delete node at the specific position and return its element."""
+        """Delete node at the position from the list and return its element."""
         if self.is_empty():
             raise EmptyListError
         answer = position._next._element
@@ -115,20 +142,24 @@ class SinglyLinkedList:
         return self.remove(positions[-2])
 
     def search(self, e):
-        """Return the position of the element in the list.
-        Return None if not exsists."""
+        """Return the position of the element in the list,
+        otherwise, None if not exsists.
+
+        """
         for p in self.__positions():
-            if not self.__isend(p) and p._next._element == e: # not the back 
+            if not self.__isend(p) and p._next._element == e: # not the back
                 return p
         return None
 
     def indexof(self, e):
-        """Return the index of the element in the list.
-        Return -1 if not exsists."""
+        """Return the index of the element in the list, 
+        otherwise, -1 if not exsists.
+
+        """
         for i, p in enumerate(self.__positions()):
-            if not self.__isend(p) and p._next._element == e: # not the back 
-                return i 
-        return -1 
+            if not self.__isend(p) and p._next._element == e: # not the back
+                return i
+        return -1
 
 
 if __name__ == '__main__':
