@@ -33,15 +33,15 @@ class Stack:
 
     def __init__(self):
         """Create an empty stack."""
-        self._data = []
+        self._items = []
 
     def __len__(self):
         """Return the size of the stack."""
-        return len(self._data)
+        return len(self._items)
 
     def __str__(self):
         """Return information for users."""
-        return str(self._data)
+        return str(self._items)
 
     def __repr__(self):
         """Return information for developers."""
@@ -50,27 +50,27 @@ class Stack:
 
     def __iter__(self):
         """Return iterator."""
-        return iter(self._data)
+        return iter(self._items)
 
     def is_empty(self):
         """Return True is the stack is empty."""
-        return len(self._data) == 0
+        return len(self._items) == 0
 
     def push(self, e):
         """Push element e to the top of the stack."""
-        self._data.append(e)
+        self._items.append(e)
 
     def pop(self):
         """Return and remove the element at the top of the stack."""
         if self.is_empty():
             raise EmptyStackError
-        return self._data.pop()
+        return self._items.pop()
 
     def top(self):
         """Return (do not remove) the element at the top of the stack."""
         if self.is_empty():
             raise EmptyStackError
-        return self._data[-1]
+        return self._items[-1]
 
 
 if __name__ == '__main__':

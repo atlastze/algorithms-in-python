@@ -33,15 +33,15 @@ class Queue:
 
     def __init__(self):
         """Create an empty queue."""
-        self._data = []
+        self._items = []
 
     def __len__(self):
         """Return the size of the queue."""
-        return len(self._data)
+        return len(self._items)
 
     def __str__(self):
         """Return information for users."""
-        return str(self._data)
+        return str(self._items)
 
     def __repr__(self):
         """Return information for developers."""
@@ -50,27 +50,27 @@ class Queue:
 
     def __iter__(self):
         """Return iterator."""
-        return iter(self._data)
+        return iter(self._items)
 
     def is_empty(self):
         """Return True is the queue is empty."""
-        return len(self._data) == 0
+        return len(self._items) == 0
 
     def enqueue(self, e):
         """Add element e to the back of the queue."""
-        self._data.append(e)
+        self._items.append(e)
 
     def dequeue(self):
         """Return and remove the element at the top of the queue."""
         if self.is_empty():
             raise EmptyQueueError
-        return self._data.pop(0)
+        return self._items.pop(0)
 
     def first(self):
         """Return (do not remove) the element at the front of the queue."""
         if self.is_empty():
             raise EmptyQueueError
-        return self._data[0]
+        return self._items[0]
 
 
 if __name__ == '__main__':

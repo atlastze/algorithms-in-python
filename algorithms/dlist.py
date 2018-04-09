@@ -58,11 +58,11 @@ class DoublyLinkedList:
         """Return the number of elements in the list."""
         return self._size
 
-    def __isend(self, node):
+    def _isend(self, node):
         """Return True if the node is the last node."""
         return node._next is self._sentinel
 
-    def __positions(self):
+    def _positions(self):
         """Generate the positions of the list.
         (including the sentinel and last node).
 
@@ -70,7 +70,7 @@ class DoublyLinkedList:
         p = self._sentinel
         while True:
             yield p
-            if self.__isend(p):
+            if self._isend(p):
                 break
             else:
                 p = p._next
@@ -82,8 +82,8 @@ class DoublyLinkedList:
 
     def __iter__(self):
         """Return iterator."""
-        for p in self.__positions():
-            if not self.__isend(p):  # not the last node
+        for p in self._positions():
+            if not self._isend(p):  # not the last node
                 yield p._next._element
 
     def __str__(self):
@@ -145,8 +145,8 @@ class DoublyLinkedList:
         otherwise, None if not exsists.
 
         """
-        for p in self.__positions():
-            if not self.__isend(p) and p._next._element == e: # not the back
+        for p in self._positions():
+            if not self._isend(p) and p._next._element == e: # not the back
                 return p
         return None
 
@@ -155,8 +155,8 @@ class DoublyLinkedList:
         otherwise, -1 if not exsists.
 
         """
-        for i, p in enumerate(self.__positions()):
-            if not self.__isend(p) and p._next._element == e: # not the back
+        for i, p in enumerate(self._positions()):
+            if not self._isend(p) and p._next._element == e: # not the back
                 return i
         return -1
 

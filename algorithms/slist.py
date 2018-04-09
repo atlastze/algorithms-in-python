@@ -54,11 +54,11 @@ class SinglyLinkedList:
         """Return the number of elements in the list."""
         return self._size
 
-    def __isend(self, node):
+    def _isend(self, node):
         """Return True if the node is the last node."""
         return node._next is None
 
-    def __positions(self):
+    def _positions(self):
         """Generate the positions of the list
         (including the sentinel and last node).
 
@@ -66,7 +66,7 @@ class SinglyLinkedList:
         p = self._sentinel
         while True:
             yield p
-            if self.__isend(p):
+            if self._isend(p):
                 break
             else:
                 p = p._next
@@ -78,8 +78,8 @@ class SinglyLinkedList:
 
     def __iter__(self):
         """Return iterator."""
-        for p in self.__positions():
-            if not self.__isend(p):  # not the last node
+        for p in self._positions():
+            if not self._isend(p):  # not the last node
                 yield p._next._element
 
     def __str__(self):
@@ -116,7 +116,7 @@ class SinglyLinkedList:
         """Return the last element."""
         if self.is_empty():
             raise EmptyListError
-        positions = list(self.__positions())
+        positions = list(self._positions())
         return self.positions[-2]._next._element
 
     def push_front(self, e):
@@ -125,7 +125,7 @@ class SinglyLinkedList:
 
     def push_back(self, e):
         """Append element e to the list."""
-        positions = list(self.__positions())
+        positions = list(self._positions())
         return self.insert(positions[-1], e)
 
     def pop_front(self):
@@ -138,7 +138,7 @@ class SinglyLinkedList:
         """Delete the last node."""
         if self.is_empty():
             raise EmptyListError
-        positions = list(self.__positions())
+        positions = list(self._positions())
         return self.remove(positions[-2])
 
     def search(self, e):
@@ -146,8 +146,8 @@ class SinglyLinkedList:
         otherwise, None if not exsists.
 
         """
-        for p in self.__positions():
-            if not self.__isend(p) and p._next._element == e: # not the back
+        for p in self._positions():
+            if not self._isend(p) and p._next._element == e: # not the back
                 return p
         return None
 
@@ -156,8 +156,8 @@ class SinglyLinkedList:
         otherwise, -1 if not exsists.
 
         """
-        for i, p in enumerate(self.__positions()):
-            if not self.__isend(p) and p._next._element == e: # not the back
+        for i, p in enumerate(self._positions()):
+            if not self._isend(p) and p._next._element == e: # not the back
                 return i
         return -1
 
