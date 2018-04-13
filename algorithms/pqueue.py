@@ -29,10 +29,11 @@ class EmptyPQueueError(Exception):
 
 class PriorityQueue:
     """A min-oriented priority queue implemented with a binary heap.
-    Items should implement the following operators: __lt__, __str__, and __repr__.
+    The item should implement the following operators: __lt__, __str__, 
+    and __repr__.
 
     """
-    #------------------------------ nonpublic behaviors ------------------------------
+    #--------------------------- nonpublic behaviors ------------------------
     def _parent(self, j):
         return (j-1) // 2
 
@@ -43,18 +44,18 @@ class PriorityQueue:
         return 2*j + 2
 
     def _has_left(self, j):
-        return self._left(j) < len(self._items)     # index beyond end of list?
+        return self._left(j) < len(self._heap)     # index beyond end of list?
 
     def _has_right(self, j):
-        return self._right(j) < len(self._items)    # index beyond end of list?
+        return self._right(j) < len(self._heap)    # index beyond end of list?
 
     def _swap(self, i, j):
         """Swap the elements at indices i and j of array."""
-        self._items[i], self._items[j] = self._items[j], self._items[i]
+        self._heap[i], self._heap[j] = self._heap[j], self._heap[i]
 
     def _upheap(self, j):
         parent = self._parent(j)
-        if j > 0 and self._items[j] < self._items[parent]:
+        if j > 0 and self._heap[j] < self._heap[parent]:
             self._swap(j, parent)
             self._upheap(parent)             # recur at position of parent
 
@@ -63,19 +64,19 @@ class PriorityQueue:
             child = self._left(j)
             if self._has_right(j):
                 right = self._right(j)
-                if self._items[right] < self._items[child]:
+                if self._heap[right] < self._heap[child]:
                     child = right
-            if self._items[child] < self._items[j]:
+            if self._heap[child] < self._heap[j]:
                 self._swap(j, child)
                 self._downheap(child)    # recur at position of smaller child
 
-    #------------------------------ public behaviors ------------------------------
+    #--------------------------- public behaviors ----------------------------
     def __init__(self, items = []):
         """Create a new priority queue. By default, queue will be empty.
         If items are given, a heap of the items will be created.
 
         """
-        self._items = items
+        self._heap = [item for item in items]
         self._heapify()
 
     def _heapify(self):
@@ -86,16 +87,20 @@ class PriorityQueue:
 
     def __len__(self):
         """Return the number of items in the priority queue."""
-        return len(self._items)
+        return len(self._heap)
 
     def __str__(self):
         """Return information for users."""
-        return str(self._items)
+        return str(self._heap)
 
     def __repr__(self):
         """Return information for developers."""
         return '< %s object at %s >' % (self.__class__,
                                hex(id(self)))
+
+    def __iter__(self):
+        """Return iteration of the heap."""
+        return iter(self._heap)
 
     def is_empty(self):
         """Return True if heap is empty."""
@@ -103,9 +108,8 @@ class PriorityQueue:
 
     def insert(self, item):
         """Add an item to the priority queue."""
-        self._items.append(item)
-        self._upheap(len(self._items) - 1)     # upheap newly added position
-        return item
+        self._heap.append(item)
+        self._upheap(len(self._heap) - 1)     # upheap newly added position
 
     def min(self):
         """Return but do not remove item with minimum key.
@@ -114,7 +118,7 @@ class PriorityQueue:
         """
         if self.is_empty():
             raise EmptyPQueueError
-        return self._items[0]
+        return self._heap[0]
 
     def remove(self):
         """Remove and return item with minimum key.
@@ -123,19 +127,25 @@ class PriorityQueue:
         """
         if self.is_empty():
             raise EmptyPQueueError
-        self._swap(0, len(self._items) - 1)     # put minimum item at the end
-        item = self._items.pop()                 # and remove it from the list;
-        self._downheap(0)                       # then fix new root
+        self._swap(0, len(self._heap) - 1)     # put minimum item at the end
+        item = self._heap.pop()                # and remove it from the list;
+        self._downheap(0)                      # then fix new root
         return item
 
 
 class AdaptablePriorityQueue(PriorityQueue):
-    """A locator-based priority queue implemented with a binary heap."""
+    """A dictionary-based priority queue implemented with a binary heap.
+    The item should implement the following operators: __lt__, __str__, 
+    __repr__, __eq__ and __hash__.
 
-    # ------------------------------ nested AdaptableItem class ----------------------
-    class AdaptableItem:
-        """Entry of the adaptable priority queue, adding index as additional field used
-        to track the position of the item in the heap.
+    """
+
+
+    # -------------------------- nested _AdaptableItem class ------------------
+    class _AdaptableItem:
+        """Entry of the adaptable priority queue, adding index as additional 
+        field used to track the position of the item in the heap.
+
         """
         __slots__ = '_item', '_index'
 
@@ -144,35 +154,58 @@ class AdaptablePriorityQueue(PriorityQueue):
             self._index = index
 
         def __repr__(self):
-            return '{{{0}: {1}}}'.format(self._index, self._item)
+            return '{{_AdaptableItem {0}: {1}}}'.format(self._index, 
+                                                        self._item)
 
         def __lt__(self, other):
             return self._item < other._item
 
     # ------------------------------ class methods ----------------------
+    def __init__(self, items = []):
+        """Create an adaptable priority queue, each item must be hashable."""
+        self._dict = {item: self._AdaptableItem(item, i) 
+                      for i, item in enumerate(items)}
+        PriorityQueue.__init__(self, self._dict.values())
+
     # override swap to record new indices
     def _swap(self, i, j):
         PriorityQueue._swap(self, i, j)       # perform the swap
-        self._items[i]._index = i             # reset locator index (post-swap)
-        self._items[j]._index = j             # reset locator index (post-swap)
+        self._heap[i]._index = i              # reset locator index (post-swap)
+        self._heap[j]._index = j              # reset locator index (post-swap)
 
     def _reheapify(self, j):
-        if j > 0 and self._items[j] < self._items[self._parent(j)]:
+        if j > 0 and self._heap[j] < self._heap[self._parent(j)]:
             self._upheap(j)
         else:
             self._downheap(j)
 
-    def insert(self, adaptable_item):
+    def insert(self, item):
         """Add a key-value pair to the priority queue."""
-        adaptable_item._index = len(self._items)
-        return PriorityQueue.insert(self, adaptable_item)
+        if item in self._dict:
+            self.update(item, item)
+        else:
+            self._dict[item] = self._AdaptableItem(item, len(self._heap))
+            PriorityQueue.insert(self, self._dict[item]) 
 
-    def update(self, adaptable_item1, adaptable_item2):
+    def min(self):
+        """Return but do not remove item with minimum key."""
+        return PriorityQueue.min(self)._item
+
+    def remove(self):
+        """Remove and return item with minimum key."""
+        item = PriorityQueue.remove(self)._item
+        del self._dict[item]
+        return item
+
+    def update(self, item1, item2):
         """Update the key and value for the entry identified by Locator loc."""
-        index = adaptable_item2._index = adaptable_item1._index
-        self._items[index] = adaptable_item2
+        if item1 not in self._dict.keys():
+            raise KeyError('item not in the adaptable priority queue')
+        index = self._dict[item1]._index
+        self._dict[item2] = self._AdaptableItem(item2, index)
+        del self._dict[item1]
+        self._heap[index] = self._dict[item2]
         self._reheapify(index)
-        return adaptable_item2
 
 
 if __name__ == '__main__':

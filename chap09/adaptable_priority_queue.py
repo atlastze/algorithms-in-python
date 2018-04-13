@@ -29,38 +29,46 @@ from algorithms.pqueue import *
 
 
 #  priority queue of user-defined objects
-class Item:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
+class Singer:
+    def __init__(self, name, priority):
+        self.name = name
+        self.priority = priority
 
     def __lt__(self, other):
-        return self.key < other.key
+        return self.priority < other.priority
 
     def __repr__(self):
-        return '({0}, {1})'.format(self.key, self.value)
+        return '({0}: {1})'.format(self.name, self.priority)
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
 
 
 if __name__ == '__main__':
-    items = [Item(4, 'Tokyo'),
-             Item(1, 'Dehi'),
-             Item(3, 'Shanghai'),
-             Item(2, 'Sao Paulo'),
-             Item(16, 'Mumbai'),
-             Item(9, 'Mexico City'),
-             Item(10, 'Beijing'),
-             Item(14, 'Osaka'),
-             Item(8, 'Cairo'),
-             Item(7, 'New York')]
-    print('>> The original items:\n{0}'.format(items))
+    items = [Singer('Calvin Harris', 4),
+             Singer('Chris Medina', 1),
+             Singer('Sam Smith', 3),
+             Singer('Martin Garrix', 2),
+             Singer('Pharrelll Williams', 16),
+             Singer('Craig David', 9),
+             Singer('Ramin Djawadi', 10),
+             Singer('Jason Mraz', 14),
+             Singer('Steive Hoang', 8),
+             Singer('John Denver', 7)]
+
+    # Ordinary priority queue
+    pq = PriorityQueue(items)
+    print('>> The original order:') 
+    while not pq.is_empty():
+        print(pq.remove())
+    print()
 
     # Adaptable priority queue
-    adaptable_items = [
-        AdaptablePriorityQueue.AdaptableItem(item, i)
-        for i, item in enumerate(items)
-    ]
-    item = adaptable_items[0]
-    pq = AdaptablePriorityQueue(adaptable_items)
-    print('>> The heap of items:\n{0}'.format(pq))
-    pq.update(item, AdaptablePriorityQueue.AdaptableItem(Item(1, 'Dalian')))
-    print('>> The heap after updating:\n{0}'.format(pq))
+    pq = AdaptablePriorityQueue(items)
+    pq.update(Singer('Sam Smith', 3), Singer('Daniel Powter', 5))
+    print('>> The updated order:') 
+    while not pq.is_empty():
+        print(pq.remove())

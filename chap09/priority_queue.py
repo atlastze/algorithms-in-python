@@ -29,28 +29,29 @@ from algorithms.pqueue import *
 
 
 #  priority queue of user-defined objects
-class Item:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
+class Singer:
+    def __init__(self, name, priority):
+        self.name = name
+        self.priority = priority
 
     def __lt__(self, other):
-        return self.key < other.key
+        return self.priority < other.priority
 
     def __repr__(self):
-        return '({0}, {1})'.format(self.key, self.value)
+        return '({0}: {1})'.format(self.name, self.priority)
 
 
 if __name__ == '__main__':
-    items = [Item(4, 'Tokyo'),
-             Item(1, 'Dehi'),
-             Item(3, 'Shanghai'),
-             Item(2, 'Sao Paulo'),
-             Item(16, 'Mumbai'),
-             Item(9, 'Mexico City'),
-             Item(10, 'Beijing'),
-             Item(14, 'Osaka'),
-             Item(8, 'Cairo'),
-             Item(7, 'New York')]
+    items = [Singer('Calvin Harris', 4),
+             Singer('Chris Medina', 1),
+             Singer('Sam Smith', 3),
+             Singer('Martin Garrix', 2),
+             Singer('Pharrelll Williams', 16),
+             Singer('Craig David', 9),
+             Singer('Ramin Djawadi', 10),
+             Singer('Jason Mraz', 14),
+             Singer('Steive Hoang', 8),
+             Singer('John Denver', 7)]
     pq = PriorityQueue(items)
-    print(pq)
+    while not pq.is_empty():
+        print(pq.remove())
