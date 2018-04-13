@@ -100,7 +100,7 @@ class PriorityQueue:
 
     def __iter__(self):
         """Return iteration of the heap."""
-        return iter(self._heap)
+        return iter(self._dict)
 
     def is_empty(self):
         """Return True if heap is empty."""
@@ -167,6 +167,12 @@ class AdaptablePriorityQueue(PriorityQueue):
                       for i, item in enumerate(items)}
         PriorityQueue.__init__(self, self._dict.values())
 
+    def __getitem__(self, key):
+        """Access item by key."""
+        if key not in self._dict.keys():
+            raise KeyError('item not in the adaptable priority queue')
+        return self._dict[key]._item
+
     # override swap to record new indices
     def _swap(self, i, j):
         PriorityQueue._swap(self, i, j)       # perform the swap
@@ -182,7 +188,7 @@ class AdaptablePriorityQueue(PriorityQueue):
     def insert(self, item):
         """Add a key-value pair to the priority queue."""
         if item in self._dict:
-            self.update(item, item)
+            self.update(item, item)   # the first item used as a key
         else:
             self._dict[item] = self._AdaptableItem(item, len(self._heap))
             PriorityQueue.insert(self, self._dict[item]) 
@@ -194,16 +200,15 @@ class AdaptablePriorityQueue(PriorityQueue):
     def remove(self):
         """Remove and return item with minimum key."""
         item = PriorityQueue.remove(self)._item
-        del self._dict[item]
+        self._dict.pop(item)
         return item
 
     def update(self, item1, item2):
-        """Update the key and value for the entry identified by Locator loc."""
+        """Update the item1 with item2, item1 used as a key."""
         if item1 not in self._dict.keys():
             raise KeyError('item not in the adaptable priority queue')
         index = self._dict[item1]._index
         self._dict[item2] = self._AdaptableItem(item2, index)
-        del self._dict[item1]
         self._heap[index] = self._dict[item2]
         self._reheapify(index)
 
