@@ -106,6 +106,24 @@ class Graph:
         else:
             return False
 
+    def __repr__(self):
+        text = '============== GRAPH ==============\nvertices: '
+        text += ', '.join([str(v) for v in self.vertices()])
+        text += '\nedges:\n'
+        text += '\n'.join([str(e) for e in self.edges()])
+        text += '\n\nthe map of outgoing edges:\n'
+        for v in self.vertices():
+            text += str(v) + ': '
+            text += '; '.join([str(e) for e in self.outgoing_edges(v)])
+            text += '\n'
+        text += '\nthe map of incoming edges:\n'
+        for v in self.vertices():
+            text += str(v) + ': '
+            text += '; '.join([str(e) for e in self.incoming_edges(v)])
+            text += '\n'
+        text += '==================================='
+        return text
+
     def _validate_vertex(self, v):
         """Verify that v is a Vertex of this graph."""
         if v not in self:
@@ -177,11 +195,12 @@ class Graph:
     def remove_vertex(self, v):
         """Remove a vertex."""
         self._validate_vertex(v)
+        for u in self.vertices():
+            self.remove_edge(u, v)
+            self.remove_edge(v, u)
         self._incoming.pop(v)
-        self._outgoing.pop(v)
-        for u in self._outgoing:
-            if v in self._outgoing[u].keys():
-                self._outgoing[u].pop(v)
+        if self.is_directed():
+            self._outgoing.pop(v)   # if undirected, _outgoing is _incomming
 
     def update_vertex(self, v, attribute):
         """Update a vertex."""
@@ -235,25 +254,14 @@ if __name__ == '__main__':
     ad = dg.insert_edge(a, d, 'AD')
     bc = dg.insert_edge(b, c, 'BC')
     bd = dg.insert_edge(b, d, 'BD')
-    da = dg.insert_edge(d, a, 'DA')
-    db = dg.insert_edge(d, b, 'DB')
 
     print('>> the original digraph:')
-    for v in dg.vertices():
-        print(v)
-    for e in dg.edges():
-        print(e)
+    print(dg)
 
-    print('>> remove edge (d->a):')
-    dg.remove_edge(d, a)
-    for v in dg.vertices():
-        print(v)
-    for e in dg.edges():
-        print(e)
+    print('\n>> remove edge (b->a):')
+    dg.remove_edge(b, a)
+    print(dg)
 
-    print('>> remove vertex (a):')
+    print('\n>> remove vertex (a):')
     dg.remove_vertex(a)
-    for v in dg.vertices():
-        print(v)
-    for e in dg.edges():
-        print(e)
+    print(dg)
