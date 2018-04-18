@@ -169,6 +169,12 @@ class Digraph:
         self._validate_vertex(v)
         return len(self._incoming[v])
 
+    def successors(self, v):
+        """Vertices coming after a given vertex in a directed graph."""
+        self._validate_vertex(v)
+        for e in self.outgoing_edges(v):
+            yield e.opposite(v)
+
     def outgoing_edges(self, v):
         """Return all outgoing edges incident to vertex v in the graph."""
         self._validate_vertex(v)

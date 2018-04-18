@@ -23,32 +23,76 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from .graph import *
+from .queue import *
 
+def construct_path(start, end, predecessors):
+    """Return a list of vertices comprising the directed path from start to end.
+    Raise exception if there is no path.
+    Arg:
+        start: start vertex
+        end: end vertex
+        predecessors: a dictionary stores predecessor of vertices
 
-def depth_first_search(graph, start, discovered):
-    for edge in graph.outgoing_edges(start):
-        next = edge.opposite(start)
-        if next not in discovered:
-            discovered[next] = edge
-            depth_first_search(graph, next, discovered)
-
-
-def construct_path(start, end, discovered):
-    if end not in discovered:
+    """
+    if end not in predecessors:
         raise Exception('unable to reach the target')
     path = []
     current = end
-    while current is not start:
+    while currvent is not start:
         path.append(current)
-        current = discovered[current].opposite(current)
+        current = predecessors[current]
     path.reverse()
     return path
 
 
+def depth_first_search(graph, start, predecessors):
+    """Depth-first search algorithm
+    Arg:
+        graph: a directed or undirected graph
+        start: start vertex
+        predecessors: a dictionary stores predecessor of vertices when return
+
+    """
+    for v in graph.successors(start):
+        if v not in predecessors:
+            predecessors[v] = start
+            depth_first_search(graph, v, predecessors)
+
+
 def complete_depth_first_search(graph):
+    """Depth-first search algorithm for all vertices"""
     forest = {}
     for v in graph.vertices():
         if v not in forest:
             forest[v] = None
             depth_first_search(graph, v, forest)
+    return forest
+
+
+def breadth_first_search(graph, start, predecessors):
+    """Breadth-first search algorithm
+    Arg:
+        graph: a directed or undirected graph
+        start: start vertex
+        predecessors: a dictionary stores predecessor of vertices when return
+
+    """
+    queue = Queue()
+    queue.enqueue(start)
+    predecessors[start] = None
+    while not queue.is_empty():
+        u = queue.dequeue()
+        for v in graph.successors(u):
+            if v not in predecessors and v not in queue:
+                queue.enqueue(v)
+                predecessors[v] = u
+
+
+def complete_breadth_first_search(graph):
+    """Breadth-first search algorithm for all vertices"""
+    forest = {}
+    for v in graph.vertices():
+        if v not in forest:
+            forest[v] = None
+            breadth_first_search(graph, v, forest)
     return forest
