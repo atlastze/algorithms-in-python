@@ -44,6 +44,9 @@ class Digraph:
         def __hash__(self):  # will allow vertex to be a map/set key
             return hash(id(self))
 
+        def __lt__(self, other):
+            return self._attribute < other._attribute
+
         def __repr__(self):
             return str(self._attribute)
 
