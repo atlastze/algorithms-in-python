@@ -22,6 +22,62 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+class Vertex:
+    """Lightweight vertex structure for a graph. If the vertex object is used in a
+    priority queue (such as Dijkstra's algorithm, you should subclass this class and
+    implement operator '__lt__'.
+
+    """
+    def __init__(self, tag):
+        """Intialize a vertex with a tag."""
+        self._tag = tag
+
+    def __hash__(self):  # will allow vertex to be a map/set key
+        return hash(id(self))
+
+    def __lt__(self, other):
+        raise NotImplementedError('__lt__ not implemented')
+
+    def __repr__(self):
+        return str(self._tag)
+
+    
+class Edge:
+    """Lightweight edge/arrow structure for a graph. If an edge is added to a graph,
+    then its endpoints are added to the graph.
+
+    """
+    __slots__ = '_head', '_tail', '_tag'
+
+    def __init__(self, u, v, tag):
+        """Intialize an edage with endpoints and a tag."""
+        self._head = u
+        self._tail = v
+        self._tag = tag
+
+    def endpoints(self):
+        """Return (u,v) tuple for vertices u and v."""
+        return (self._head, self._tail)
+
+    def opposite(self, v):
+        """Return the vertex that is opposite v on this edge."""
+        if not isinstance(v, Graph.Vertex):
+            raise TypeError('vertex type expected')
+        if v is self._head:
+            return self._tail
+        elif v is self._tail:
+            return self._head
+        else:
+            raise ValueError('vertex not incident to the edge')
+
+    def __hash__(self):  # will allow edge to be a map/set key
+        return hash((self._head, self._tail))
+
+    def __repr__(self):
+        return '{0} ({1}, {2})'.format(self._tag, self._head, self._tail)
+
+
 class Digraph:
     """Representation of a directed graph using an adjacency map(map of maps):
         self._outgoing = { u: { v: edge for edge(u, v) in graph.edges}
@@ -29,73 +85,6 @@ class Digraph:
         self._incoming = { u: { v: edge for edge(v, u) in graph.edges}
                            for u in graph.vertices }
     """
-
-    # ------------------------- nested Vertex class -------------------------
-    class Vertex:
-        """Lightweight vertex structure for a graph."""
-
-        def __init__(self, attribute):
-            """Do not call constructor directly.
-            Use Graph's insert_vertex(x).
-
-            """
-            self._attribute = attribute
-
-        def __hash__(self):  # will allow vertex to be a map/set key
-            return hash(id(self))
-
-        def __lt__(self, other):
-            return self._attribute < other._attribute
-
-        def __repr__(self):
-            return str(self._attribute)
-
-        #def __repr__(self):
-            #return '< %s object at %s >' % (self.__class__, hex(id(self)))
-
-
-    # ------------------------- nested Edge class -------------------------
-    class Edge:
-        """Lightweight edge/arrow structure for a digraph."""
-        __slots__ = '_head', '_tail', '_attribute'
-
-        def __init__(self, u, v, attribute):
-            """Do not call constructor directly.
-            Use Graph's insert_edge(u,v,x).
-
-            """
-            self._head = u
-            self._tail = v
-            self._attribute = attribute
-
-        def endpoints(self):
-            """Return (u,v) tuple for vertices u and v."""
-            return (self._head, self._tail)
-
-        def opposite(self, v):
-            """Return the vertex that is opposite v on this edge."""
-            if not isinstance(v, Graph.Vertex):
-                raise TypeError('vertex type expected')
-            if v is self._head:
-                return self._tail
-            elif v is self._tail:
-                return self._head
-            else:
-                raise ValueError('vertex not incident to the edge')
-
-        def __hash__(self):  # will allow edge to be a map/set key
-            return hash((self._head, self._tail))
-
-        def __repr__(self):
-            return '({0}--{1}: {2})'.format(self._head,
-                                            self._tail,
-                                            self._attribute)
-
-        #def __repr__(self):
-            #return '< %s object at %s >' % (self.__class__, hex(id(self)))
-
-
-    # ------------------------- Graph methods -------------------------
     def __init__(self):
         """Create an empty graph (undirected, by default)."""
         self._outgoing = {}
@@ -103,7 +92,7 @@ class Digraph:
 
     def __contains__(self, v):
         """Override 'in'(membership) operator."""
-        if not isinstance(v, self.Vertex):
+        if not isinstance(v, Vertex):
             raise TypeError('vertex type expected')
         if v in self.vertices():
             return True
@@ -118,12 +107,12 @@ class Digraph:
         text += '\n\nthe map of outgoing edges:\n'
         for v in self.vertices():
             text += str(v) + ': '
-            text += ' '.join([str(e) for e in self.outgoing_edges(v)])
+            text += '  '.join([str(e) for e in self.outgoing_edges(v)])
             text += '\n'
         text += '\nthe map of incoming edges:\n'
         for v in self.vertices():
             text += str(v) + ': '
-            text += ' '.join([str(e) for e in self.incoming_edges(v)])
+            text += '  '.join([str(e) for e in self.incoming_edges(v)])
             text += '\n'
         text += '==================================='
         return text
@@ -172,11 +161,15 @@ class Digraph:
         self._validate_vertex(v)
         return len(self._incoming[v])
 
+    def predecessors(self, v):
+        """Vertices coming before a given vertex in a directed graph."""
+        self._validate_vertex(v)
+        return self._incoming[v].keys()
+
     def successors(self, v):
         """Vertices coming after a given vertex in a directed graph."""
         self._validate_vertex(v)
-        for e in self.outgoing_edges(v):
-            yield e.opposite(v)
+        return self._outgoing[v].keys()
 
     def outgoing_edges(self, v):
         """Return all outgoing edges incident to vertex v in the graph."""
@@ -188,11 +181,11 @@ class Digraph:
         self._validate_vertex(v)
         return self._incoming[v].values()
 
-    def insert_vertex(self, attribute):
+    def insert_vertex(self, v):
         """Insert and return a new vertex"""
-        v = self.Vertex(attribute)
-        self._outgoing[v] = {}
-        self._incoming[v] = {}
+        if v not in self:
+            self._outgoing[v] = {}
+            self._incoming[v] = {}
         return v
 
     def remove_vertex(self, v):
@@ -205,37 +198,29 @@ class Digraph:
         self._incoming.pop(v)
         self._outgoing.pop(v)
 
-    def update_vertex(self, v, attribute):
-        """Update a vertex."""
-        self._validate_vertex(v)
-        v._attr = attribute
-
-    def insert_edge(self, u, v, attribute):
-        """Insert and return a new edge from u to v with attribute.
-        If u and v are adjacent, update the edge.
-        Raise a ValueError if u and v are not vertices of the graph.
+    def insert_edge(self, e):
+        """Insert and return an edge. If the endpoints of the edge are not
+        vertices of the graph, then add them to the graph.
 
         """
-        if self.edge(u, v):
-            return self.update_edge(u, v, attribute)
-        e = self.Edge(u, v, attribute)
+        u, v = e.endpoints()
+        if u not in self:
+            self.insert_vertex(u)
+        if v not in self:
+            self.insert_vertex(v)
         self._outgoing[u][v] = e
         self._incoming[v][u] = e
         return e
 
     def remove_edge(self, u, v):
-        """Remove and return an edge, if not adjacent, do nothing."""
+        """Remove and return an edge from u to v. If not adjacent,
+        do nothing.
+
+        """
         e = self.edge(u, v)
         if e:
             self._outgoing[u].pop(v)
             self._incoming[v].pop(u)
-        return e
-
-    def update_edge(self, u, v, attribute):
-        """Update and return an edge, if not adjacent, do nothing."""
-        e = self.edge(u, v)
-        if e:
-            e._attribute = attribute
         return e
 
 
@@ -245,13 +230,21 @@ class Graph(Digraph):
 
     """
 
-    def insert_edge(self, u, v, attribute):
-        """Insert and return a new edge from u to v with attribute.
-        If u and v are adjacent, update the edge.
+    def insert_edge(self, e):
+        """Insert and return an edge. If the endpoints of the edge are not
+        vertices of the graph, then add them to the graph.
 
         """
-        Digraph.insert_edge(self, u, v, attribute)
-        return Digraph.insert_edge(self, v, u, attribute)
+        u, v = e.endpoints()
+        if u not in self:
+            self.insert_vertex(u)
+        if v not in self:
+            self.insert_vertex(v)
+        self._outgoing[u][v] = e     # add (u, v)
+        self._incoming[v][u] = e
+        self._outgoing[v][u] = e     # add (v, u)
+        self._incoming[u][v] = e
+        return e
 
     def remove_edge(self, u, v):
         """Remove and return an edge, if not adjacent, do nothing."""
@@ -260,26 +253,34 @@ class Graph(Digraph):
 
 
 if __name__ == '__main__':
-    dg = Digraph()
-    a = dg.insert_vertex('A')
-    b = dg.insert_vertex('B')
-    c = dg.insert_vertex('C')
-    d = dg.insert_vertex('D')
-    ab = dg.insert_edge(a, b, 'AB')
-    ba = dg.insert_edge(b, a, 'BA')
-    ac = dg.insert_edge(a, c, 'AC')
-    ca = dg.insert_edge(c, a, 'CA')
-    ad = dg.insert_edge(a, d, 'AD')
-    bc = dg.insert_edge(b, c, 'BC')
-    bd = dg.insert_edge(b, d, 'BD')
+    a = Vertex('A')
+    b = Vertex('B')
+    c = Vertex('C')
+    d = Vertex('D')
+    ab = Edge(a, b, 'AB')
+    ba = Edge(b, a, 'BA')
+    ac = Edge(a, c, 'AC')
+    ca = Edge(c, a, 'CA')
+    ad = Edge(a, d, 'AD')
+    bc = Edge(b, c, 'BC')
+    bd = Edge(b, d, 'BD')
+
+    g = Digraph()
+    g.insert_edge(ab)
+    g.insert_edge(ba)
+    g.insert_edge(ac)
+    g.insert_edge(ca)
+    g.insert_edge(ad)
+    g.insert_edge(bc)
+    g.insert_edge(bd)
 
     print('>> the original digraph:')
-    print(dg)
+    print(g)
 
-    print('\n>> remove edge (b->a):')
-    dg.remove_edge(b, a)
-    print(dg)
+    print('\n>> remove ege (b->a):')
+    g.remove_edge(b, a)
+    print(g)
 
     print('\n>> remove vertex (a):')
-    dg.remove_vertex(a)
-    print(dg)
+    g.remove_vertex(a)
+    print(g)

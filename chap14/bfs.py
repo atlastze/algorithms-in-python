@@ -25,27 +25,34 @@
 import sys
 sys.path.append('..')
 
-from algorithms.graphalgorithms import *
+from algorithms.graphalgo import *
 
 
 if __name__ == '__main__':
-    dg = Digraph()
-    a = dg.insert_vertex('A')
-    b = dg.insert_vertex('B')
-    c = dg.insert_vertex('C')
-    d = dg.insert_vertex('D')
-    e = dg.insert_vertex('E')
-    ab = dg.insert_edge(a, b, 'AB')
-    ba = dg.insert_edge(b, a, 'BA')
-    ac = dg.insert_edge(a, c, 'AC')
-    ca = dg.insert_edge(c, a, 'CA')
-    ad = dg.insert_edge(a, d, 'AD')
-    bc = dg.insert_edge(b, c, 'BC')
-    bd = dg.insert_edge(b, d, 'BD')
-    ed = dg.insert_edge(e, d, 'ED')
+    a = AlgoVertex('A')
+    b = AlgoVertex('B')
+    c = AlgoVertex('C')
+    d = AlgoVertex('D')
+    ab = Edge(a, b, 'AB')
+    ba = Edge(b, a, 'BA')
+    ac = Edge(a, c, 'AC')
+    ca = Edge(c, a, 'CA')
+    ad = Edge(a, d, 'AD')
+    bc = Edge(b, c, 'BC')
+    bd = Edge(b, d, 'BD')
+
+    g = Digraph()
+    g.insert_edge(ab)
+    g.insert_edge(ba)
+    g.insert_edge(ac)
+    g.insert_edge(ca)
+    g.insert_edge(ad)
+    g.insert_edge(bc)
+    g.insert_edge(bd)
 
     print('>> the original digraph:')
-    print(dg)
+    print(g)
 
-    forest = complete_breadth_first_search(dg)
-    print(forest)
+    complete_breadth_first_search(g)
+    for v in g.vertices():
+        print('{0}->{1}'.format(v.predecessor, v))
