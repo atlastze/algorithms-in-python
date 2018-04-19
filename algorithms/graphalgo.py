@@ -28,6 +28,7 @@ Contents:
     Breadth-first Search
     Bellman-Ford's algorithm
     Dijkstra's algorithm
+    Prim's algorithm
 
 References:
     Cormen, Leiserson et al, Introduction to Algorithms, 3rd, 2009
@@ -39,7 +40,7 @@ from .queue import *
 from .pqueue import *
 
 
-class AlgoVertex(Vertex):
+class WeightedVertex(Vertex):
     """Heavyweight vertex structure used for graph algorithms."""
     def __init__(self, tag):
         Vertex.__init__(self, tag)
@@ -167,4 +168,24 @@ def dijkstra(graph, src):
             if v.color == 'white':
                 relax(graph, u, v)
                 pq.update(v, v)         # the first v used as a key
+        u.color = 'black'
+
+
+def prim(graph, src):
+    """Prim's algorithm for minimum spanning tree."""
+    initialize_single_source(graph, src)
+    pq = AdaptablePriorityQueue()
+    for v in graph.vertices():
+        pq.insert(v)
+    while not pq.is_empty():
+        u = pq.remove()
+        u.color = 'gray'
+        for v in graph.successors(u):
+            # Prim and Dijkstra algorithm are almost the same,
+            # except for the "relax function".
+            e = graph.edge(u, v)
+            if v.color == 'white' and e.distance < v.distance:
+                v.distance = e.distance
+                v.predecessor = u
+                pq.update(v, v)  # the first v used as a key
         u.color = 'black'

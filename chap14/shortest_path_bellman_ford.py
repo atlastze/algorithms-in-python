@@ -30,11 +30,11 @@ from algorithms.graphalgo import *
 
 if __name__ == '__main__':
     g = Digraph()
-    s = AlgoVertex('s')
-    t = AlgoVertex('t')
-    x = AlgoVertex('x')
-    y = AlgoVertex('y')
-    z = AlgoVertex('z')
+    s = WeightedVertex('s')
+    t = WeightedVertex('t')
+    x = WeightedVertex('x')
+    y = WeightedVertex('y')
+    z = WeightedVertex('z')
     st = WeightedEdge(s, t, 'st', 6)
     sy = WeightedEdge(s, y, 'sy', 7)
     tx = WeightedEdge(t, x, 'tx', 5)

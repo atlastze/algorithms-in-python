@@ -29,10 +29,10 @@ from algorithms.graphalgo import *
 
 
 if __name__ == '__main__':
-    a = AlgoVertex('A')
-    b = AlgoVertex('B')
-    c = AlgoVertex('C')
-    d = AlgoVertex('D')
+    a = WeightedVertex('A')
+    b = WeightedVertex('B')
+    c = WeightedVertex('C')
+    d = WeightedVertex('D')
     ab = Edge(a, b, 'AB')
     ba = Edge(b, a, 'BA')
     ac = Edge(a, c, 'AC')

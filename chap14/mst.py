@@ -29,33 +29,20 @@ from algorithms.graphalgo import *
 
 
 if __name__ == '__main__':
-    g = Digraph()
-    s = WeightedVertex('s')
-    t = WeightedVertex('t')
-    x = WeightedVertex('x')
-    y = WeightedVertex('y')
-    z = WeightedVertex('z')
-    st = WeightedEdge(s, t, 'st', 10)
-    sy = WeightedEdge(s, y, 'sy', 5)
-    tx = WeightedEdge(t, x, 'tx', 1)
-    ty = WeightedEdge(t, y, 'ty', 2)
-    xz = WeightedEdge(x, z, 'xz', 4)
-    yt = WeightedEdge(y, t, 'yt', 3)
-    yx = WeightedEdge(y, x, 'yx', 9)
-    yz = WeightedEdge(y, z, 'yz', 2)
-    zs = WeightedEdge(z, s, 'zs', 7)
-    zx = WeightedEdge(z, x, 'zx', 6)
-    g.insert_edge(st)
-    g.insert_edge(sy)
-    g.insert_edge(tx)
-    g.insert_edge(ty)
-    g.insert_edge(xz)
-    g.insert_edge(yt)
-    g.insert_edge(yx)
-    g.insert_edge(yz)
-    g.insert_edge(zs)
-    g.insert_edge(zx)
-    dijkstra(g, s)
+    g = Graph()
+    v = [WeightedVertex(i+1) for i in range(9)]
+    d = [4, 8, 7, 9, 10, 2, 1, 7]
+    tag = [str(i) for i in range(14)]
+    e = [WeightedEdge(v[i], v[i+1], tag[i], d[i]) for i in range(8)]
+    e.append(WeightedEdge(v[0], v[7], tag[8], 8))
+    e.append(WeightedEdge(v[7], v[1], tag[9], 11))
+    e.append(WeightedEdge(v[8], v[2], tag[10], 2))
+    e.append(WeightedEdge(v[8], v[6], tag[11], 6))
+    e.append(WeightedEdge(v[2], v[5], tag[12], 4))
+    e.append(WeightedEdge(v[3], v[5], tag[13], 14))
+    for i in range(14):
+        g.insert_edge(e[i])
+    prim(g, v[0])
     print(g)
     for v in g.vertices():
         print('{0}: {1}, from {2}'.format(v, v.distance, v.predecessor))
