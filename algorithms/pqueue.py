@@ -91,7 +91,12 @@ class PriorityQueue:
 
     def __str__(self):
         """Return information for users."""
-        return str(self._heap)
+        text = ''
+        for i, item in enumerate(self._heap):
+            left = self._left(i) if self._has_left(i) else -1 
+            right = self._right(i) if self._has_right(i) else -1 
+            text += '%-2d(L:%2d, R:%2d)  %s\n' % (i, left, right, str(item))
+        return text
 
     def __repr__(self):
         """Return information for developers."""
@@ -153,9 +158,11 @@ class AdaptablePriorityQueue(PriorityQueue):
             self._item = item
             self._index = index
 
+        def __str__(self):
+            return str(self._item)
+
         def __repr__(self):
-            return '{{_AdaptableItem {0}: {1}}}'.format(self._index, 
-                                                        self._item)
+            return repr(self._item)
 
         def __lt__(self, other):
             return self._item < other._item
