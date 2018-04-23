@@ -29,15 +29,15 @@ from algorithms.graph import *
 
 
 if __name__ == '__main__':
-    a = Vertex('A')
-    b = Vertex('B')
-    c = Vertex('C')
-    d = Vertex('D')
-    ab = Edge(a, b, 'AB')
-    ac = Edge(a, c, 'AC')
-    ad = Edge(a, d, 'AD')
-    bc = Edge(b, c, 'BC')
-    bd = Edge(b, d, 'BD')
+    a = BaseVertex('A')
+    b = BaseVertex('B')
+    c = BaseVertex('C')
+    d = BaseVertex('D')
+    ab = BaseEdge(a, b, 'AB')
+    ac = BaseEdge(a, c, 'AC')
+    ad = BaseEdge(a, d, 'AD')
+    bc = BaseEdge(b, c, 'BC')
+    bd = BaseEdge(b, d, 'BD')
 
     g = Graph()
     g.insert_edge(ab)

@@ -38,25 +38,32 @@ References:
 from .graph import *
 from .queue import *
 from .pqueue import *
+from .disjointset import *
 
 
-class WeightedVertex(Vertex):
+class Vertex(BaseVertex):
     """Heavyweight vertex structure used for graph algorithms."""
     def __init__(self, tag):
-        Vertex.__init__(self, tag)
+        BaseVertex.__init__(self, tag)
         self.color = 'white'           # mark used in graph traversal
         self.predecessor = None        # previous vertex in a directed path
         self.distance = float('inf')   # distance from the source
 
     def __lt__(self, other):
+        """Vertex comparison, usually used in priority queue."""
         return self.distance < other.distance
 
-class WeightedEdge(Edge):
+
+class Edge(BaseEdge):
     """Weighted edge structure."""
-    def __init__(self, u, v, tag, distance):
+    def __init__(self, u, v, tag, distance = float('inf')):
         """Intialize an edage with endpoints and a tag."""
-        Edge.__init__(self, u, v, tag)
+        BaseEdge.__init__(self, u, v, tag)
         self.distance = distance
+
+    def __lt__(self, other):
+        """Edge comparison, usually used in priority queue."""
+        return self.distance < other.distance
 
 
 def initialize_graph_traversal(graph):
@@ -189,3 +196,25 @@ def prim(graph, src):
                 v.predecessor = u
                 pq.update(v, v)  # the first v used as a key
         u.color = 'black'
+
+
+def kruskal(graph, src):
+    """Kruskal's algorithm for minimum spanning tree."""
+    initialize_single_source(graph, src)
+    cluster = {v: DisjointSet(v) for v in graph.vertices()}
+    pq = PriorityQueue()
+    for e in graph.edges():
+        pq.insert(e)
+    while not pq.is_empty():
+        e = pq.remove()
+        u, v = e.endpoints()
+        print('>> Consider edge ({0}, {1}), weight: {2}'.format(u, v,
+                                                                e.distance))
+        if find_set(cluster[u]) is not find_set(cluster[v]):
+            print('.. Add')
+            v.predecessor = u
+            v.distance = e.distance
+            if union_set(cluster[u], cluster[v])._size == graph.vertex_count():
+                break
+        else:
+            print('.. Discard')

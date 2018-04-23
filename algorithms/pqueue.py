@@ -91,11 +91,13 @@ class PriorityQueue:
 
     def __str__(self):
         """Return information for users."""
-        text = ''
+        text = '============== HEAP =============='
         for i, item in enumerate(self._heap):
             left = self._left(i) if self._has_left(i) else -1 
             right = self._right(i) if self._has_right(i) else -1 
-            text += '%-2d(L:%2d, R:%2d)  %s\n' % (i, left, right, str(item))
+            text += '\nNo.%d (L: %d, R: %d)\n%s' % (i, left, right,
+                                                     str(item))
+        text += '\n=================================='
         return text
 
     def __repr__(self):

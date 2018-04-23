@@ -29,33 +29,20 @@ from algorithms.graphalgo import *
 
 
 if __name__ == '__main__':
-    g = Digraph()
-    s = Vertex('s')
-    t = Vertex('t')
-    x = Vertex('x')
-    y = Vertex('y')
-    z = Vertex('z')
-    st = Edge(s, t, 'st', 6)
-    sy = Edge(s, y, 'sy', 7)
-    tx = Edge(t, x, 'tx', 5)
-    ty = Edge(t, y, 'ty', 8)
-    tz = Edge(t, z, 'tz', -4)
-    xt = Edge(x, t, 'xt', -2)
-    yx = Edge(y, x, 'yx', -3)
-    yz = Edge(y, z, 'yz', 9)
-    zs = Edge(z, s, 'zs', 2)
-    zx = Edge(z, x, 'zx', 7)
-    g.insert_edge(st)
-    g.insert_edge(sy)
-    g.insert_edge(tx)
-    g.insert_edge(ty)
-    g.insert_edge(tz)
-    g.insert_edge(xt)
-    g.insert_edge(yx)
-    g.insert_edge(yz)
-    g.insert_edge(zs)
-    g.insert_edge(zx)
-    bellman_ford(g, s)
+    g = Graph()
+    v = [Vertex(i+1) for i in range(9)]
+    d = [4, 8, 7, 9, 10, 2, 1, 7]
+    tag = [str(i) for i in range(14)]
+    e = [Edge(v[i], v[i+1], tag[i], d[i]) for i in range(8)]
+    e.append(Edge(v[0], v[7], tag[8], 8))
+    e.append(Edge(v[7], v[1], tag[9], 11))
+    e.append(Edge(v[8], v[2], tag[10], 2))
+    e.append(Edge(v[8], v[6], tag[11], 6))
+    e.append(Edge(v[2], v[5], tag[12], 4))
+    e.append(Edge(v[3], v[5], tag[13], 14))
+    for i in range(14):
+        g.insert_edge(e[i])
+    kruskal(g, v[0])
     print(g)
     for v in g.vertices():
         print('{0}: {1}, from {2}'.format(v, v.distance, v.predecessor))

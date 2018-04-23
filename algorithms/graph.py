@@ -23,7 +23,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-class Vertex:
+class BaseVertex:
     """Lightweight vertex structure for a graph. If the vertex object is used in a
     priority queue (such as Dijkstra's algorithm, you should subclass this class and
     implement operator '__lt__'.
@@ -43,7 +43,7 @@ class Vertex:
         return str(self._tag)
 
     
-class Edge:
+class BaseEdge:
     """Lightweight edge/arrow structure for a graph. If an edge is added to a graph,
     then its endpoints are added to the graph.
 
@@ -62,7 +62,7 @@ class Edge:
 
     def opposite(self, v):
         """Return the vertex that is opposite v on this edge."""
-        if not isinstance(v, Graph.Vertex):
+        if not isinstance(v, BaseVertex):
             raise TypeError('vertex type expected')
         if v is self._head:
             return self._tail
@@ -92,7 +92,7 @@ class Digraph:
 
     def __contains__(self, v):
         """Override 'in'(membership) operator."""
-        if not isinstance(v, Vertex):
+        if not isinstance(v, BaseVertex):
             raise TypeError('vertex type expected')
         if v in self.vertices():
             return True
@@ -253,17 +253,17 @@ class Graph(Digraph):
 
 
 if __name__ == '__main__':
-    a = Vertex('A')
-    b = Vertex('B')
-    c = Vertex('C')
-    d = Vertex('D')
-    ab = Edge(a, b, 'AB')
-    ba = Edge(b, a, 'BA')
-    ac = Edge(a, c, 'AC')
-    ca = Edge(c, a, 'CA')
-    ad = Edge(a, d, 'AD')
-    bc = Edge(b, c, 'BC')
-    bd = Edge(b, d, 'BD')
+    a = BaseVertex('A')
+    b = BaseVertex('B')
+    c = BaseVertex('C')
+    d = BaseVertex('D')
+    ab = BaseEdge(a, b, 'AB')
+    ba = BaseEdge(b, a, 'BA')
+    ac = BaseEdge(a, c, 'AC')
+    ca = BaseEdge(c, a, 'CA')
+    ad = BaseEdge(a, d, 'AD')
+    bc = BaseEdge(b, c, 'BC')
+    bd = BaseEdge(b, d, 'BD')
 
     g = Digraph()
     g.insert_edge(ab)

@@ -22,40 +22,30 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import sys
-sys.path.append('..')
+class DisjointSet:
+    """Union-find structure for maintaining disjoint sets."""
 
-from algorithms.graphalgo import *
+    def __init__(self, element):
+        self._size = 1
+        self._element = element
+        self._parent = self
 
 
-if __name__ == '__main__':
-    g = Digraph()
-    s = Vertex('s')
-    t = Vertex('t')
-    x = Vertex('x')
-    y = Vertex('y')
-    z = Vertex('z')
-    st = Edge(s, t, 'st', 6)
-    sy = Edge(s, y, 'sy', 7)
-    tx = Edge(t, x, 'tx', 5)
-    ty = Edge(t, y, 'ty', 8)
-    tz = Edge(t, z, 'tz', -4)
-    xt = Edge(x, t, 'xt', -2)
-    yx = Edge(y, x, 'yx', -3)
-    yz = Edge(y, z, 'yz', 9)
-    zs = Edge(z, s, 'zs', 2)
-    zx = Edge(z, x, 'zx', 7)
-    g.insert_edge(st)
-    g.insert_edge(sy)
-    g.insert_edge(tx)
-    g.insert_edge(ty)
-    g.insert_edge(tz)
-    g.insert_edge(xt)
-    g.insert_edge(yx)
-    g.insert_edge(yz)
-    g.insert_edge(zs)
-    g.insert_edge(zx)
-    bellman_ford(g, s)
-    print(g)
-    for v in g.vertices():
-        print('{0}: {1}, from {2}'.format(v, v.distance, v.predecessor))
+def find_set(p):
+    while p._parent != p:
+        p =  p._parent
+    return p
+
+
+def union_set(p, q):
+    a = find_set(p)
+    b = find_set(q)
+    if a is not b:
+        if a._size > b._size:
+            b._parent = a
+            a._size += b._size
+            return a
+        else:
+            a._parent = b
+            b._size += a._size
+            return b
