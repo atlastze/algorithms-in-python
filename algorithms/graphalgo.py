@@ -41,6 +41,9 @@ from .pqueue import *
 from .disjointset import *
 
 
+order = 0
+
+
 class Vertex(BaseVertex):
     """Heavyweight vertex structure used for graph algorithms."""
     def __init__(self, tag):
@@ -48,6 +51,8 @@ class Vertex(BaseVertex):
         self.color = 'white'           # mark used in graph traversal
         self.predecessor = None        # previous vertex in a directed path
         self.distance = float('inf')   # distance from the source
+        self.discover = 0              # order of discovering
+        self.finish = 0                # order of finishing
 
     def __lt__(self, other):
         """Vertex comparison, usually used in priority queue."""
@@ -68,9 +73,13 @@ class Edge(BaseEdge):
 
 def initialize_graph_traversal(graph):
     """Initialization for graph traversal problem."""
+    global order
+    order = 0
     for v in graph.vertices():
         v.color = 'white'
         v.predecessor = None
+        v.discover = 0  # order of discovering
+        v.finish = 0  # order of finishing
 
 
 def construct_path(start, end):
@@ -91,12 +100,17 @@ def construct_path(start, end):
 
 def depth_first_search(graph, start):
     """Depth-first search algorithm"""
+    global order
+    order += 1
+    start.discover = order
     start.color = 'gray'
     for v in graph.successors(start):
         if v.color == 'white':
             v.predecessor = start
             depth_first_search(graph, v)  # recursively search
     start.color = 'black'
+    order += 1
+    start.finish = order
 
 
 def complete_depth_first_search(graph):
@@ -105,6 +119,15 @@ def complete_depth_first_search(graph):
     for v in graph.vertices():
         if v.color == 'white':
             depth_first_search(graph, v)
+
+
+def toposort(graph):
+    """Topological sort of a directed acyclic graph."""
+    complete_depth_first_search(graph)
+    vertices = {v.finish: v for v in graph.vertices()}
+    temp = sorted(vertices)
+    temp.reverse()
+    return [vertices[temp[i]] for i in range(len(temp))]
 
 
 def breadth_first_search(graph, start):

@@ -56,3 +56,4 @@ if __name__ == '__main__':
     complete_breadth_first_search(g)
     for v in g.vertices():
         print('{0}->{1}'.format(v.predecessor, v))
+        print('d:{0} f:{1}'.format(v.discover, v.finish))
