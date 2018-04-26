@@ -107,7 +107,7 @@ class PriorityQueue:
 
     def __iter__(self):
         """Return iteration of the heap."""
-        return iter(self._dict)
+        return iter(self._heap)
 
     def is_empty(self):
         """Return True if heap is empty."""
@@ -147,7 +147,6 @@ class AdaptablePriorityQueue(PriorityQueue):
 
     """
 
-
     # -------------------------- nested _AdaptableItem class ------------------
     class _AdaptableItem:
         """Entry of the adaptable priority queue, adding index as additional 
@@ -178,9 +177,17 @@ class AdaptablePriorityQueue(PriorityQueue):
 
     def __getitem__(self, key):
         """Access item by key."""
-        if key not in self._dict.keys():
+        if key not in self._dict:
             raise KeyError('item not in the adaptable priority queue')
         return self._dict[key]._item
+
+    def __iter__(self):
+        """Return iteration of the heap items."""
+        return [adaptableitem._item for adaptableitem in self._heap]
+
+    def __contains__(self, item):
+        """Check whether the item is included."""
+        return item in self._dict
 
     # override swap to record new indices
     def _swap(self, i, j):
@@ -214,7 +221,7 @@ class AdaptablePriorityQueue(PriorityQueue):
 
     def update(self, item1, item2):
         """Update the item1 with item2, item1 used as a key."""
-        if item1 not in self._dict.keys():
+        if item1 not in self._dict:
             raise KeyError('item not in the adaptable priority queue')
         index = self._dict[item1]._index
         self._dict[item2] = self._AdaptableItem(item2, index)

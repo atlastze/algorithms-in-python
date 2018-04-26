@@ -1,0 +1,8 @@
+digraph
+    AB A B
+    BA B A
+    AC A C
+    CA C A
+    AD A D
+    BC B C
+    BD B D

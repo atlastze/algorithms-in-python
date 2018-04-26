@@ -29,30 +29,12 @@ from algorithms.graph import *
 
 
 if __name__ == '__main__':
-    a = BaseVertex('A')
-    b = BaseVertex('B')
-    c = BaseVertex('C')
-    d = BaseVertex('D')
-    ab = BaseEdge(a, b, 'AB')
-    ac = BaseEdge(a, c, 'AC')
-    ad = BaseEdge(a, d, 'AD')
-    bc = BaseEdge(b, c, 'BC')
-    bd = BaseEdge(b, d, 'BD')
-
-    g = Graph()
-    g.insert_edge(ab)
-    g.insert_edge(ac)
-    g.insert_edge(ad)
-    g.insert_edge(bc)
-    g.insert_edge(bd)
-
+    g = graph_read('example2.txt')
     print('>> the original digraph:')
     print(g)
-
-    print('\n>> remove ege (a--b):')
-    g.remove_edge(a, b)
+    print('\n>> remove ege (b->a):')
+    g.remove_edge(Vertex('B'), Vertex('A'))
     print(g)
-
     print('\n>> remove vertex (a):')
-    g.remove_vertex(a)
+    g.remove_vertex(Vertex('A'))
     print(g)

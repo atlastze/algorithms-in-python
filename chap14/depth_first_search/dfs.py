@@ -23,39 +23,16 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 
 from algorithms.graphalgo import *
 
 
 if __name__ == '__main__':
-    g = Digraph()
-    s = Vertex('s')
-    t = Vertex('t')
-    x = Vertex('x')
-    y = Vertex('y')
-    z = Vertex('z')
-    st = Edge(s, t, 'st', 6)
-    sy = Edge(s, y, 'sy', 7)
-    tx = Edge(t, x, 'tx', 5)
-    ty = Edge(t, y, 'ty', 8)
-    tz = Edge(t, z, 'tz', -4)
-    xt = Edge(x, t, 'xt', -2)
-    yx = Edge(y, x, 'yx', -3)
-    yz = Edge(y, z, 'yz', 9)
-    zs = Edge(z, s, 'zs', 2)
-    zx = Edge(z, x, 'zx', 7)
-    g.insert_edge(st)
-    g.insert_edge(sy)
-    g.insert_edge(tx)
-    g.insert_edge(ty)
-    g.insert_edge(tz)
-    g.insert_edge(xt)
-    g.insert_edge(yx)
-    g.insert_edge(yz)
-    g.insert_edge(zs)
-    g.insert_edge(zx)
-    bellman_ford(g, s)
+    g = graph_read('example.txt')
+    print('>> the original digraph:')
     print(g)
+    complete_depth_first_search(g)
     for v in g.vertices():
-        print('{0}: {1}, from {2}'.format(v, v.distance, v.predecessor))
+        print('{0} from: {1}\torder: {2}/{3}'
+              .format(v, v.predecessor, v.discover, v.finish))

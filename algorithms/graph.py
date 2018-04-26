@@ -23,38 +23,52 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-class BaseVertex:
+class Vertex:
     """Lightweight vertex structure for a graph. If the vertex object is used in a
     priority queue (such as Dijkstra's algorithm, you should subclass this class and
     implement operator '__lt__'.
 
     """
     def __init__(self, tag):
-        """Intialize a vertex with a tag."""
+        """Initialize a vertex with a tag."""
         self._tag = tag
+        self.color = 'white'  # mark used in graph traversal
+        self.predecessor = None  # previous vertex in a directed path
+        self.distance = float('inf')  # distance from the source
+        self.discover = 0  # order of discovering
+        self.finish = 0  # order of finishing
+
+    def __lt__(self, other):
+        """Vertex comparison, usually used in priority queue."""
+        return self.distance < other.distance
 
     def __hash__(self):  # will allow vertex to be a map/set key
         return hash(id(self))
 
-    def __lt__(self, other):
-        raise NotImplementedError('__lt__ not implemented')
+    def __eq__(self, other):
+        return self is other
 
     def __repr__(self):
         return str(self._tag)
 
     
-class BaseEdge:
+class Edge:
     """Lightweight edge/arrow structure for a graph. If an edge is added to a graph,
     then its endpoints are added to the graph.
 
     """
-    __slots__ = '_head', '_tail', '_tag'
+    __slots__ = '_head', '_tail', '_tag', 'distance'
 
-    def __init__(self, u, v, tag):
-        """Intialize an edage with endpoints and a tag."""
+    def __init__(self, u, v, tag, distance = 1):
+        """Initialize an edge with endpoints and a tag."""
         self._head = u
         self._tail = v
         self._tag = tag
+        self.distance = distance
+
+    def __lt__(self, other):
+        """Edge comparison, usually used in priority queue."""
+        return self.distance < other.distance
 
     def endpoints(self):
         """Return (u,v) tuple for vertices u and v."""
@@ -62,7 +76,7 @@ class BaseEdge:
 
     def opposite(self, v):
         """Return the vertex that is opposite v on this edge."""
-        if not isinstance(v, BaseVertex):
+        if not isinstance(v, Vertex):
             raise TypeError('vertex type expected')
         if v is self._head:
             return self._tail
@@ -73,6 +87,9 @@ class BaseEdge:
 
     def __hash__(self):  # will allow edge to be a map/set key
         return hash((self._head, self._tail))
+
+    def __eq__(self, other):
+        return self._head is other._head and self._tail is other._tail
 
     def __repr__(self):
         return '{0} ({1}, {2})'.format(self._tag, self._head, self._tail)
@@ -92,7 +109,7 @@ class Digraph:
 
     def __contains__(self, v):
         """Override 'in'(membership) operator."""
-        if not isinstance(v, BaseVertex):
+        if not isinstance(v, Vertex):
             raise TypeError('vertex type expected')
         if v in self.vertices():
             return True
@@ -122,13 +139,20 @@ class Digraph:
         if v not in self:
             raise ValueError('vertex not in the graph')
 
+    def vertex(self, tag):
+        """Retrieve the vertex by tag."""
+        for v in self.vertices():
+            if v._tag == tag:
+                return v
+        raise Exception('vertex not in the graph')
+
     def vertex_count(self):
         """Return the number of vertices in the graph."""
         return len(self._outgoing)
 
     def vertices(self):
         """Return an iteration of all vertices of the graph."""
-        return self._outgoing.keys()
+        return self._outgoing
 
     def edge_count(self):
         """Return the number of edges in the graph."""
@@ -146,7 +170,7 @@ class Digraph:
         """Return the edge from u to v, or None if not adjacent."""
         self._validate_vertex(u)
         self._validate_vertex(v)
-        if v in self._outgoing[u].keys():
+        if v in self._outgoing[u]:
             return self._outgoing[u][v]
         else:
             return None
@@ -164,12 +188,12 @@ class Digraph:
     def predecessors(self, v):
         """Vertices coming before a given vertex in a directed graph."""
         self._validate_vertex(v)
-        return self._incoming[v].keys()
+        return self._incoming[v]
 
     def successors(self, v):
         """Vertices coming after a given vertex in a directed graph."""
         self._validate_vertex(v)
-        return self._outgoing[v].keys()
+        return self._outgoing[v]
 
     def outgoing_edges(self, v):
         """Return all outgoing edges incident to vertex v in the graph."""
@@ -252,35 +276,53 @@ class Graph(Digraph):
         return Digraph.remove_edge(self, v, u)
 
 
+def graph_read(filename):
+    """Read graph description file. The file example (unweighted 
+    and weighted graph):
+    digraph (or graph)
+        ab a b
+        bc b c
+        cd c d
+        ...
+        
+    digraph (or graph)
+        ab a b 3
+        bc b c 1
+        cd c d 5
+        ...
+    
+    """
+    graph = None
+    vertices = {}
+    with open(filename, 'r') as f:
+        token = f.readline().strip()
+        if token == 'digraph':
+            graph = Digraph()
+        elif token == 'graph':
+            graph = Graph()
+
+        for line in f.readlines():
+            # format: edge_tag1 vertex_tag1 vertex_tag2 [optional_weight]
+            token = line.strip().split()
+            u = token[1]
+            if u not in vertices:
+                vertices[u] = Vertex(u)
+            v = token[2]
+            if v not in vertices:
+                vertices[v] = Vertex(v)
+            w = float(token[3]) if len(token) == 4 else 1.0
+            e = Edge(vertices[u], vertices[v], token[0], w)
+            graph.insert_edge(e)
+    return graph
+
+
 if __name__ == '__main__':
-    a = BaseVertex('A')
-    b = BaseVertex('B')
-    c = BaseVertex('C')
-    d = BaseVertex('D')
-    ab = BaseEdge(a, b, 'AB')
-    ba = BaseEdge(b, a, 'BA')
-    ac = BaseEdge(a, c, 'AC')
-    ca = BaseEdge(c, a, 'CA')
-    ad = BaseEdge(a, d, 'AD')
-    bc = BaseEdge(b, c, 'BC')
-    bd = BaseEdge(b, d, 'BD')
-
-    g = Digraph()
-    g.insert_edge(ab)
-    g.insert_edge(ba)
-    g.insert_edge(ac)
-    g.insert_edge(ca)
-    g.insert_edge(ad)
-    g.insert_edge(bc)
-    g.insert_edge(bd)
-
+    g = graph_read('../chap14/example1.txt')
     print('>> the original digraph:')
     print(g)
-
     print('\n>> remove ege (b->a):')
-    g.remove_edge(b, a)
+    g.remove_edge(Vertex('B'), Vertex('A'))
     print(g)
-
     print('\n>> remove vertex (a):')
-    g.remove_vertex(a)
+    g.remove_vertex(Vertex('A'))
     print(g)

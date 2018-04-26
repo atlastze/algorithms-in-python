@@ -44,33 +44,6 @@ from .disjointset import *
 order = 0
 
 
-class Vertex(BaseVertex):
-    """Heavyweight vertex structure used for graph algorithms."""
-    def __init__(self, tag):
-        BaseVertex.__init__(self, tag)
-        self.color = 'white'           # mark used in graph traversal
-        self.predecessor = None        # previous vertex in a directed path
-        self.distance = float('inf')   # distance from the source
-        self.discover = 0              # order of discovering
-        self.finish = 0                # order of finishing
-
-    def __lt__(self, other):
-        """Vertex comparison, usually used in priority queue."""
-        return self.distance < other.distance
-
-
-class Edge(BaseEdge):
-    """Weighted edge structure."""
-    def __init__(self, u, v, tag, distance = float('inf')):
-        """Intialize an edage with endpoints and a tag."""
-        BaseEdge.__init__(self, u, v, tag)
-        self.distance = distance
-
-    def __lt__(self, other):
-        """Edge comparison, usually used in priority queue."""
-        return self.distance < other.distance
-
-
 def initialize_graph_traversal(graph):
     """Initialization for graph traversal problem."""
     global order
@@ -78,6 +51,7 @@ def initialize_graph_traversal(graph):
     for v in graph.vertices():
         v.color = 'white'
         v.predecessor = None
+        v.distance = float('inf')
         v.discover = 0  # order of discovering
         v.finish = 0  # order of finishing
 
@@ -125,9 +99,9 @@ def toposort(graph):
     """Topological sort of a directed acyclic graph."""
     complete_depth_first_search(graph)
     vertices = {v.finish: v for v in graph.vertices()}
-    temp = sorted(vertices)
-    temp.reverse()
-    return [vertices[temp[i]] for i in range(len(temp))]
+    postorder = sorted(vertices)
+    postorder.reverse()
+    return [vertices[i] for i in postorder]
 
 
 def breadth_first_search(graph, start):
@@ -139,6 +113,8 @@ def breadth_first_search(graph, start):
 
     """
     start.color = 'gray'
+    start.distance = 0
+    start.predecessor = None
     queue = Queue()
     queue.enqueue(start)
     while not queue.is_empty():
@@ -146,6 +122,7 @@ def breadth_first_search(graph, start):
         for v in graph.successors(u):
             if v.color == 'white':
                 v.color = 'gray'
+                v.distance = u.distance + 1
                 v.predecessor = u
                 queue.enqueue(v)
         u.color = 'black'
@@ -224,8 +201,9 @@ def prim(graph, src):
 def kruskal(graph, src):
     """Kruskal's algorithm for minimum spanning tree."""
     initialize_single_source(graph, src)
+    tree = []               # list of edges in spanning tree
     cluster = {v: DisjointSet(v) for v in graph.vertices()}
-    pq = PriorityQueue()
+    pq = PriorityQueue()    # entries are edges in G, with weights as key
     for e in graph.edges():
         pq.insert(e)
     while not pq.is_empty():
@@ -235,9 +213,10 @@ def kruskal(graph, src):
                                                                 e.distance))
         if find_set(cluster[u]) is not find_set(cluster[v]):
             print('.. Add')
-            v.predecessor = u
-            v.distance = e.distance
-            if union_set(cluster[u], cluster[v])._size == graph.vertex_count():
+            tree.append(e)
+            union_set(cluster[u], cluster[v])
+            if len(tree) == graph.vertex_count()-1:
                 break
         else:
             print('.. Discard')
+    return tree

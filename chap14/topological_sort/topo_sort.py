@@ -23,48 +23,14 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 
 from algorithms.graphalgo import *
 
 
 if __name__ == '__main__':
-    a = Vertex('A')
-    b = Vertex('B')
-    c = Vertex('C')
-    d = Vertex('D')
-    e = Vertex('E')
-    f = Vertex('F')
-    g = Vertex('G')
-    h = Vertex('H')
-
-    ac = Edge(a, c, 'AC')
-    ad = Edge(a, d, 'AD')
-    bd = Edge(b, d, 'BD')
-    bf = Edge(b, f, 'BF')
-    cd = Edge(c, d, 'CD')
-    ce = Edge(c, e, 'CE')
-    df = Edge(d, f, 'DF')
-    eg = Edge(e, g, 'EG')
-    fg = Edge(f, g, 'FG')
-    fh = Edge(f, h, 'FH')
-    gh = Edge(g, h, 'GH')
-
-    g = Digraph()
-    g.insert_edge(ac)
-    g.insert_edge(ad)
-    g.insert_edge(bd)
-    g.insert_edge(bf)
-    g.insert_edge(cd)
-    g.insert_edge(ce)
-    g.insert_edge(df)
-    g.insert_edge(eg)
-    g.insert_edge(fg)
-    g.insert_edge(fh)
-    g.insert_edge(gh)
-
+    g = graph_read('example.txt')
     print('>> the original digraph:')
     print(g)
-
     for v in toposort(g):
         print('{0}'.format(v))

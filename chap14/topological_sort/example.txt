@@ -1,0 +1,12 @@
+digraph
+    BD B D
+    AC A C
+    AD A D
+    BF B F
+    CD C D
+    CE C E
+    DF D F
+    EG E G
+    FG F G
+    FH F H
+    GH G H

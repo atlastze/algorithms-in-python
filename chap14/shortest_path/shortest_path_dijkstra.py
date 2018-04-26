@@ -23,37 +23,14 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 
 from algorithms.graphalgo import *
 
 
 if __name__ == '__main__':
-    a = Vertex('A')
-    b = Vertex('B')
-    c = Vertex('C')
-    d = Vertex('D')
-    ab = Edge(a, b, 'AB')
-    ba = Edge(b, a, 'BA')
-    ac = Edge(a, c, 'AC')
-    ca = Edge(c, a, 'CA')
-    ad = Edge(a, d, 'AD')
-    bc = Edge(b, c, 'BC')
-    bd = Edge(b, d, 'BD')
-
-    g = Digraph()
-    g.insert_edge(ab)
-    g.insert_edge(ba)
-    g.insert_edge(ac)
-    g.insert_edge(ca)
-    g.insert_edge(ad)
-    g.insert_edge(bc)
-    g.insert_edge(bd)
-
-    print('>> the original digraph:')
+    g = graph_read('dijkstra.txt')
+    dijkstra(g, g.vertex('s'))
     print(g)
-
-    complete_depth_first_search(g)
     for v in g.vertices():
-        print('{0}->{1}'.format(v.predecessor, v))
-        print('d:{0} f:{1}'.format(v.discover, v.finish))
+        print('{0}: {1}, from {2}'.format(v, v.distance, v.predecessor))

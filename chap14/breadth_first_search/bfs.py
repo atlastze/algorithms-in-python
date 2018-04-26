@@ -23,39 +23,16 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 
 from algorithms.graphalgo import *
 
 
 if __name__ == '__main__':
-    g = Digraph()
-    s = Vertex('s')
-    t = Vertex('t')
-    x = Vertex('x')
-    y = Vertex('y')
-    z = Vertex('z')
-    st = Edge(s, t, 'st', 10)
-    sy = Edge(s, y, 'sy', 5)
-    tx = Edge(t, x, 'tx', 1)
-    ty = Edge(t, y, 'ty', 2)
-    xz = Edge(x, z, 'xz', 4)
-    yt = Edge(y, t, 'yt', 3)
-    yx = Edge(y, x, 'yx', 9)
-    yz = Edge(y, z, 'yz', 2)
-    zs = Edge(z, s, 'zs', 7)
-    zx = Edge(z, x, 'zx', 6)
-    g.insert_edge(st)
-    g.insert_edge(sy)
-    g.insert_edge(tx)
-    g.insert_edge(ty)
-    g.insert_edge(xz)
-    g.insert_edge(yt)
-    g.insert_edge(yx)
-    g.insert_edge(yz)
-    g.insert_edge(zs)
-    g.insert_edge(zx)
-    dijkstra(g, s)
+    g = graph_read('example.txt')
+    print('>> the original digraph:')
     print(g)
+    breadth_first_search(g, g.vertex('s'))
     for v in g.vertices():
-        print('{0}: {1}, from {2}'.format(v, v.distance, v.predecessor))
+        print('{0} from: {1} distance: {2}'
+              .format(v, v.predecessor, v.distance))

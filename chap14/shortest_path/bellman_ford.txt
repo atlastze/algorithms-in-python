@@ -1,0 +1,11 @@
+digraph
+    st s t 6
+    sy s y 7
+    tx t x 5
+    ty t y 8
+    tz t z -4
+    xt x t -2
+    yx y x -3
+    yz y z 9
+    zs z s 2
+    zx z x 7

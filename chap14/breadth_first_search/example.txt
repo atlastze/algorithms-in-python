@@ -1,0 +1,11 @@
+graph
+    rs r s
+    rv r v
+    sw s w
+    tu t u
+    tw t w
+    tx t x
+    ux u x
+    uy u y
+    wx w x
+    xy x y

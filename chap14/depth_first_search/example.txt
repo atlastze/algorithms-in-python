@@ -1,0 +1,9 @@
+digraph
+    uv u v
+    ux u x
+    vy v y
+    wy w y
+    wz w z
+    xv x v
+    yx y x
+    zz z z

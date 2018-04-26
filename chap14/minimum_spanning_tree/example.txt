@@ -1,0 +1,15 @@
+graph
+    ab a b 4
+    bc b c 8
+    cd c d 7
+    de d e 9
+    ef e f 10
+    fg f g 2
+    gh g h 1
+    ha h a 8
+    hb h b 11
+    hi h i 7
+    ic i c 2
+    ig i g 6
+    fc f c 4
+    fd f d 14
