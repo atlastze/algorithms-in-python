@@ -247,6 +247,10 @@ class Digraph:
             self._incoming[v].pop(u)
         return e
 
+    def reverse(self):
+        """Reverse the graph."""
+        self._outgoing, self._incoming = self._incoming, self._outgoing
+
 
 class Graph(Digraph):
     """Class Graph, derived from class Digraph.

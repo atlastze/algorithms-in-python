@@ -104,6 +104,20 @@ def toposort(graph):
     return [vertices[i] for i in postorder]
 
 
+def kosaraju(graph):
+    """Kosaraju's algorithm for strongly connected components."""
+    # reverse the graph
+    graph.reverse()
+    # reverse depth-first search postorder of reversed graph
+    vertices = toposort(graph)
+    # restore the graph, run depth-first search in the order above
+    graph.reverse()
+    initialize_graph_traversal(graph)
+    for v in vertices:
+        if v.color == 'white':
+            depth_first_search(graph, v)
+
+
 def breadth_first_search(graph, start):
     """Breadth-first search algorithm
     Arg:

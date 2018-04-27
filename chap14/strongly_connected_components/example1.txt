@@ -1,0 +1,15 @@
+digraph
+    ab a b
+    bc b c
+    be b e
+    bf b f
+    cd c d
+    cg c g
+    dc d c
+    da e a
+    dh d h
+    ef e f
+    fg f g
+    gf g f
+    gh g h
+    hh h h
